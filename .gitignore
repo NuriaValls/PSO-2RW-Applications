@@ -1,0 +1,10 @@
+
+# CLION FILES
+
+.idea/
+cmake-build-debug/
+CMakeLists.txt
+
+# EXE
+
+psoAlgo
