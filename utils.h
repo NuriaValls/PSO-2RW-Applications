@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #define DEBUG				1
+#define LENGTH 			    100
 
 #define COLOR_DEBUG			"\x1b[33m"
 #define COLOR_RESET			"\x1b[0m"
@@ -19,9 +20,11 @@
 #define MSG_CONFIG_OK		ANSI_COLOR_CYAN "[Config OK] " ANSI_COLOR_RESET
 #define MSG_CONFIG_KO		ANSI_COLOR_RED "[Config KO] " ANSI_COLOR_RESET
 #define MSG_WRONG_ARGS		MSG_CONFIG_KO "The calling format is not correct, it should be:\n\tpsoAlgo\t<population_size>\n"
+#define MSG_FILE_ERR		MSG_CONFIG_KO "Error opening the file %s.\n"
 
 void print(const char *msg);
 void println(const char *msg);
 void debug(const char *msg);
+char *readFileDescriptor(int fd);
 
 #endif

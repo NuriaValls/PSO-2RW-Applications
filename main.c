@@ -8,13 +8,10 @@ int main(int argc, char **argv) {
 
 	if (!checkProgramArguments(argc)) {
 		print(MSG_WRONG_ARGS);
-		exit(EXIT_FAILURE); //???
+		exit(EXIT_FAILURE);
 	}
 
-	println(argv[1]);
-
-	pop_size = atoi(argv[1]);
-	//print(pop_size);
+    readConfigFile(argv[1]);
 
 	return EXIT_SUCCESS;
 

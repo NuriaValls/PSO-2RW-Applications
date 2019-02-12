@@ -16,3 +16,23 @@ void debug(const char *msg) {
 		write(STDERR_FILENO, COLOR_RESET, strlen(COLOR_RESET));
 	}
 }
+
+char *readFileDescriptor(int fd) {
+	char mychar = '\0';
+	int index = 0;
+	char *string;
+	int length;
+
+	string = NULL;
+	while (1) {
+		length = (int) read(fd, &mychar, sizeof(char));
+
+		if (mychar == '\n' || mychar == '\0' || !length)
+			return string;
+
+		string = realloc(string, (size_t) index + 2);
+		string[index] = mychar;
+		string[index + 1] = '\0';
+		index++;
+	}
+}
