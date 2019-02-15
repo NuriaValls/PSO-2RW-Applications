@@ -21,8 +21,24 @@ Config readConfigFile(char *filename) {
     free(aux);
 
     aux = readFileDescriptor(file);
-    config.d = atoi(aux); // NOLINT
+    config.d = atoi(aux);
     free(aux);
+
+    for (int i=0; i<config.d; i++) {
+        Range range;
+
+        aux = readFileDescriptor(file);
+        range.min = atoi(aux);
+        free(aux);
+
+        aux = readFileDescriptor(file);
+        range.max = atoi(aux);
+        free(aux);
+
+        config.param_range = realloc(config.param_range, (size_t) sizeof(range)*(i + 1));
+        config.param_range[i] = range;
+
+    }
 
     close(file);
 
@@ -30,4 +46,13 @@ Config readConfigFile(char *filename) {
     debug(msg);
 
     return config;
+}
+
+
+void createInitialPopulation(Config config, Swarm *swarm) {
+
+    // necessitem saber els limits de l'espai de parametres per donar un valor inicial aleatori a les partícules.
+    // modificar el lector de fitxer!!
+
+
 }

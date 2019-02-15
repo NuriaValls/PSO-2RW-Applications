@@ -4,14 +4,17 @@
 
 int main(int argc, char **argv) {
 
-	int pop_size;
+	Config config;
+	Swarm swarm;
 
 	if (!checkProgramArguments(argc)) {
 		print(MSG_WRONG_ARGS);
 		exit(EXIT_FAILURE);
 	}
 
-    readConfigFile(argv[1]);
+    config = readConfigFile(argv[1]);
+
+	createInitialPopulation(config, &swarm);
 
 	return EXIT_SUCCESS;
 

@@ -27,8 +27,14 @@ typedef struct {
 } Swarm;
 
 typedef struct {
+    int max;
+    int min;
+} Range;
+
+typedef struct {
     int n;
     int d;
+    Range * param_range;
 } Config;
 
 

@@ -27,7 +27,7 @@ char *readFileDescriptor(int fd) {
 	while (1) {
 		length = (int) read(fd, &mychar, sizeof(char));
 
-		if (mychar == '\n' || mychar == '\0' || !length)
+		if (mychar == '\n' || mychar == '\0' || mychar == ',' || !length)
 			return string;
 
 		string = realloc(string, (size_t) index + 2);
