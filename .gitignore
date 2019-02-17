@@ -8,3 +8,7 @@ CMakeLists.txt
 # EXE
 
 psoAlgo
+
+# JUPYTER
+
+Referencies\ PSO/.*
