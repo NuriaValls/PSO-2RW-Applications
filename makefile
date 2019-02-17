@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -lm
 MAIN = main.c
 MODULES = logica utils
 EXE = psoAlgo

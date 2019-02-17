@@ -6,6 +6,8 @@
 #include <sys/fcntl.h>
 #include <pthread.h>
 #include <signal.h>
+#include <time.h>
+#include <math.h>
 
 #include "utils.h"
 
@@ -13,16 +15,16 @@
 #define N       10  //population size
 
 typedef struct {
-    float *params;
-    float velocity;
-    float *fit_values;
-    float best_individual;
-    float best_global;
+    float *params;          // paràmetres actuals
+    float *velocity;        // velocitat actual
+    float *best_params;     // millors paràmetres individuals
+    float best_fit;
 } Particle;
 
 typedef struct {
     Particle *particles;
-    float solution;
+    float *best_params;
+    float best_fit;
     int iterations;
 } Swarm;
 
@@ -34,12 +36,18 @@ typedef struct {
 typedef struct {
     int n;
     int d;
-    Range * param_range;
+    Range *param_range;
 } Config;
 
 
-char checkProgramArguments(int argc);
-
 Config readConfigFile(char *filename);
+
+void createInitialPopulation(Config config, Swarm *swarm, float function(float x, float y));
+
+void getFitValues(Config c, Swarm *swarm, float function(float x ,float y));
+
+void updateVelocity(Config c, Swarm *swarm);
+
+void updateParameters(Config c, Swarm *swarm);
 
 #endif

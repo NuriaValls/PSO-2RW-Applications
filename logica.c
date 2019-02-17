@@ -1,9 +1,5 @@
 #include "logica.h"
 
-char checkProgramArguments(int argc) {
-	return argc == 2;
-}
-
 Config readConfigFile(char *filename) {
     int file;
     char msg[LENGTH], *aux;
@@ -24,7 +20,9 @@ Config readConfigFile(char *filename) {
     config.d = atoi(aux);
     free(aux);
 
-    for (int i=0; i<config.d; i++) {
+    config.param_range = NULL;
+
+    for (int i = 0; i < config.d; i++) {
         Range range;
 
         aux = readFileDescriptor(file);
@@ -35,7 +33,7 @@ Config readConfigFile(char *filename) {
         range.max = atoi(aux);
         free(aux);
 
-        config.param_range = realloc(config.param_range, (size_t) sizeof(range)*(i + 1));
+        config.param_range = realloc(config.param_range, (size_t) sizeof(range) * (i + 1));
         config.param_range[i] = range;
 
     }
@@ -49,10 +47,87 @@ Config readConfigFile(char *filename) {
 }
 
 
-void createInitialPopulation(Config config, Swarm *swarm) {
+void createInitialPopulation(Config config, Swarm *swarm, float function(float x, float y)) {
 
-    // necessitem saber els limits de l'espai de parametres per donar un valor inicial aleatori a les partícules.
-    // modificar el lector de fitxer!!
+    swarm->particles = malloc((size_t) sizeof(Particle) * config.n);
+
+    for (int i = 0; i < config.n; i++) {
+        Particle p;
+
+        p.params = malloc((size_t) sizeof(float) * config.d);
+
+        for (int j = 0; j < config.d; j++) {
+            float r = (float) rand();
+
+            p.params[j] = (config.param_range[j].max - config.param_range[j].min) * r / RAND_MAX + config.param_range[j].min;
+        }
+
+        //printf("%f,%f\n", p.params[0], p.params[1]);
+
+        p.velocity = malloc((size_t) sizeof(float) * config.d);
+        p.best_params = malloc((size_t) sizeof(float) * config.d);
+
+        for (int j = 0; j < config.d; j++) {
+            p.velocity[j] = ((float) rand()) / RAND_MAX;   // entre 0 i 1 (de moment)
+            p.best_params[j] = p.params[j];
+        }
+
+        p.best_fit = function(p.best_params[0], p.best_params[1]);
+        swarm->particles[i] = p;
+    }
+
+    swarm->best_fit = swarm->particles[0].best_fit;
+    swarm->best_params = malloc((size_t) sizeof(float) * config.d);
+    swarm->iterations = 0;
+}
 
 
+void getFitValues(Config c, Swarm *swarm, float function(float x, float y)) {
+
+    for (int i=0; i<c.n; i++) {
+        float fit = 0;
+
+        fit = function(swarm->particles[i].params[0], swarm->particles[i].params[1]);
+
+        if (fit < swarm->particles[i].best_fit) {
+            swarm->particles[i].best_fit = fit;
+            for (int j = 0; j < c.d; j++) {
+                swarm->particles[i].best_params[j] = swarm->particles[i].params[j];
+            }
+        }
+
+        if (fit < swarm->best_fit) {
+            swarm->best_fit = fit;
+            for (int j = 0; j < c.d; j++) {
+                swarm->best_params[j] = swarm->particles[i].params[j];
+            }
+        }
+    }
+}
+
+
+void updateVelocity(Config c, Swarm *swarm) {
+
+    for (int i=0; i<c.n; i++) {
+        float cognitive;
+        float social;
+
+        for (int j = 0; j < c.d; j++) {
+            cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
+            social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
+
+            swarm->particles[i].velocity[j] += cognitive + social;
+        }
+    }
+}
+
+
+void updateParameters(Config c, Swarm *swarm) {
+
+    for (int i=0; i<c.n; i++) {
+        for (int j = 0; j < c.d; j++) {
+
+            swarm->particles[i].params[j] += swarm->particles[i].velocity[j];
+        }
+    }
 }
