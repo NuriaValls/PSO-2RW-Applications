@@ -38,9 +38,13 @@ Config readConfigFile(char *filename) {
 
     }
 
+    aux = readFileDescriptor(file);
+    config.vmax = atof(aux);
+    free(aux);
+
     close(file);
 
-    sprintf(msg, "|%d/%d|\n", config.n, config.d);
+    sprintf(msg, "|%d/%d/%f|\n", config.n, config.d, config.vmax);
     debug(msg);
 
     return config;
@@ -68,7 +72,8 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
         p.best_params = malloc((size_t) sizeof(float) * config.d);
 
         for (int j = 0; j < config.d; j++) {
-            p.velocity[j] = ((float) rand()) / RAND_MAX;   // entre 0 i 1 (de moment)
+            //p.velocity[j] = ((float) rand()) / RAND_MAX;   // entre 0 i 1 (de moment)
+            p.velocity[j] = (float) 0;
             p.best_params[j] = p.params[j];
         }
 
@@ -79,6 +84,12 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
     swarm->best_fit = swarm->particles[0].best_fit;
     swarm->best_params = malloc((size_t) sizeof(float) * config.d);
     swarm->iterations = 0;
+    swarm->vmax = malloc((size_t) sizeof(float) * config.d);
+
+    for (int j = 0; j < config.d; j++) {
+        swarm->vmax[j] = config.vmax * (config.param_range[j].max - config.param_range[j].min);
+    }
+
 }
 
 
@@ -106,17 +117,30 @@ void getFitValues(Config c, Swarm *swarm, float function(float x, float y)) {
 }
 
 
-void updateVelocity(Config c, Swarm *swarm) {
+void updateVelocity(Config c, Swarm *swarm, float function(float x, float y)) {
+
+    char msg[LENGTH];
+    float cognitive;
+    float social;
+    float velocity;
+
+    //float w;
 
     for (int i=0; i<c.n; i++) {
-        float cognitive;
-        float social;
-
         for (int j = 0; j < c.d; j++) {
+
+            //w = (float) (1.1 - (swarm->particles[i].best_params[j] / swarm->best_params[j]));
+
             cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
             social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
 
-            swarm->particles[i].velocity[j] += cognitive + social;
+            /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
+                    function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
+            sprintf(msg, "%f\n",w);
+            debug(msg);*/
+
+            velocity = swarm->particles[i].velocity[j] + cognitive + social;
+            swarm->particles[i].velocity[j] = velocity > swarm->vmax[j] ? swarm->vmax[j] : velocity;
         }
     }
 }

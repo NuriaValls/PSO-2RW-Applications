@@ -26,6 +26,7 @@ typedef struct {
     float *best_params;
     float best_fit;
     int iterations;
+    float *vmax;
 } Swarm;
 
 typedef struct {
@@ -37,6 +38,7 @@ typedef struct {
     int n;
     int d;
     Range *param_range;
+    float vmax;
 } Config;
 
 
@@ -46,7 +48,7 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
 
 void getFitValues(Config c, Swarm *swarm, float function(float x ,float y));
 
-void updateVelocity(Config c, Swarm *swarm);
+void updateVelocity(Config c, Swarm *swarm, float function(float x ,float y));
 
 void updateParameters(Config c, Swarm *swarm);
 
