@@ -124,12 +124,37 @@ void updateVelocity(Config c, Swarm *swarm, float function(float x, float y)) {
     float social;
     float velocity;
 
-    //float w;
+    float w;
 
     for (int i=0; i<c.n; i++) {
         for (int j = 0; j < c.d; j++) {
 
-            //w = (float) (1.1 - (swarm->particles[i].best_params[j] / swarm->best_params[j]));
+            w = (float) (1.1 - (swarm->particles[i].best_params[j] / swarm->best_params[j]));
+
+            cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
+            social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
+
+            /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
+                    function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
+            sprintf(msg, "%f\n",w);
+            debug(msg);*/
+
+            velocity = swarm->particles[i].velocity[j] + cognitive + social;
+            swarm->particles[i].velocity[j] = velocity;
+        }
+    }
+}
+
+
+void updateVelocity_vMax(Config c, Swarm *swarm, float function(float x, float y)) {
+
+    char msg[LENGTH];
+    float cognitive;
+    float social;
+    float velocity;
+
+    for (int i=0; i<c.n; i++) {
+        for (int j = 0; j < c.d; j++) {
 
             cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
             social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
@@ -142,6 +167,80 @@ void updateVelocity(Config c, Swarm *swarm, float function(float x, float y)) {
             velocity = swarm->particles[i].velocity[j] + cognitive + social;
             swarm->particles[i].velocity[j] = velocity > swarm->vmax[j] ? swarm->vmax[j] : velocity;
         }
+    }
+}
+
+
+void updateVelocity_fixedWeights(Config c, Swarm *swarm, float function(float x, float y)) {
+
+    char msg[LENGTH];
+    float cognitive;
+    float social;
+    float velocity;
+
+    for (int i=0; i<c.n; i++) {
+        for (int j = 0; j < c.d; j++) {
+
+            cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
+            social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
+
+            /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
+                    function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
+            sprintf(msg, "%f\n",w);
+            debug(msg);*/
+
+            velocity = (float) (0.729 * swarm->particles[i].velocity[j] + 1.49445 * cognitive + 1.49445 * social);
+            swarm->particles[i].velocity[j] = velocity;
+        }
+    }
+}
+
+
+void updateVelocity_decreasingInertia(Config c, Swarm *swarm, float function(float x, float y), int max_t) {
+
+    char msg[LENGTH];
+    float cognitive;
+    float social;
+    float velocity;
+    float w;
+
+    for (int i=0; i<c.n; i++) {
+        for (int j = 0; j < c.d; j++) {
+
+            w = (float) ((0.9 - 0.4) * (max_t - swarm->iterations) / (max_t + 0.4));
+
+            cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
+            social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
+
+            /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
+                    function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
+            sprintf(msg, "%f\n",w);
+            debug(msg);*/
+
+            velocity = w * swarm->particles[i].velocity[j] + cognitive + social;
+            swarm->particles[i].velocity[j] = velocity;
+        }
+    }
+}
+
+
+void select_updateVelocity(int select, Config c, Swarm *swarm, float function(float x, float y), int max_t) {
+
+    switch (select) {
+        case 0:
+            updateVelocity(c, swarm, function);
+            break;
+        case 1:
+            updateVelocity_vMax(c, swarm, function);
+            break;
+        case 2:
+            updateVelocity_fixedWeights(c, swarm, function);
+            break;
+        case 3:
+            updateVelocity_decreasingInertia(c, swarm, function, max_t);
+
+        default:
+            break;
     }
 }
 

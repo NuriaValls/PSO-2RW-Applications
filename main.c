@@ -2,6 +2,10 @@
 
 #include "logica.h"
 
+
+int select_velocity_method = 3;
+
+
 char checkProgramArguments(int argc) {
     return argc == 2;
 }
@@ -18,7 +22,7 @@ int main(int argc, char **argv) {
 	Config config;
 	Swarm swarm;
     char msg[LENGTH];
-    int iter = 10000;
+    int iter = 100;
 
 	srand(time(NULL));
 
@@ -38,7 +42,7 @@ int main(int argc, char **argv) {
         sprintf(msg, "I: %d, Best fit value: %f\n", swarm.iterations, swarm.best_fit);
         debug(msg);
 
-        updateVelocity(config, &swarm, function);
+        select_updateVelocity(select_velocity_method, config, &swarm, function, iter);
 
         updateParameters(config, &swarm);
 
