@@ -85,11 +85,3 @@ int main(int argc, char **argv) {
 
 }
 
-//PREGUNTES:
-
-//-> Com podem passar com a paràmetre de la llibreria la funció a optimitzar?
-//-> Què passa si tenim paràmetres restringits discrets?
-//-> Guardo com a inicialització del valor màxim el punt aleatori inicial?
-//-> Convergeix amb poques iteracions i a valors poc acurats
-
-// fixar velocitat màxima a x i y
