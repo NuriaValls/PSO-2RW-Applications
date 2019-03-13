@@ -247,10 +247,16 @@ void select_updateVelocity(int select, Config c, Swarm *swarm, float function(fl
 
 void updateParameters(Config c, Swarm *swarm) {
 
+    float aux = 0;
+
     for (int i=0; i<c.n; i++) {
         for (int j = 0; j < c.d; j++) {
 
-            swarm->particles[i].params[j] += swarm->particles[i].velocity[j];
+            aux = swarm->particles[i].params[j] + swarm->particles[i].velocity[j];
+
+            if (aux >= c.param_range[j].min & aux <= c.param_range[j].max) {
+                swarm->particles[i].params[j] = aux;
+            }
         }
     }
 }
