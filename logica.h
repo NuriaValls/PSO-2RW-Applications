@@ -11,8 +11,8 @@
 
 #include "utils.h"
 
-#define D       2   //number of parameters to optimize
-#define N       10  //population size
+#define V_FIXED_WEIGHT_C 1.49445
+#define V_FIXED_WEIGHT_VI 0.729
 
 typedef struct {
     float *params;          // paràmetres actuals

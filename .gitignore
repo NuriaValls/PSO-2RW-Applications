@@ -5,6 +5,10 @@
 cmake-build-debug/
 CMakeLists.txt
 
+# PYCHARM FILES
+
+venv
+
 # EXE
 
 psoAlgo
