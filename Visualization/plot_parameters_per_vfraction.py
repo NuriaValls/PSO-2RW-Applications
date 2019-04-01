@@ -35,7 +35,7 @@ mean_iterations_list = []
 mean_fit_list = []
 mean_time_list = []
 
-for i in range(25):
+for i in range(10):
     line1 = []
     line2 = []
     line3 = []
@@ -59,7 +59,7 @@ plt.title("Test Parameters")
 plt.xlabel('max velocity fraction')
 plt.ylabel('iterations')
 
-for i in range(25):
+for i in range(10):
     plt.plot(v_fraction_list[i], mean_iterations_list[i], label=pop_size_list[i][0])
 
 plt.legend(bbox_to_anchor=(1.05, 0.5), loc=6, borderaxespad=1., title='pop_size:')
@@ -73,7 +73,7 @@ plt.title("Test Parameters")
 plt.xlabel('max velocity fraction')
 plt.ylabel('execution time')
 
-for i in range(25):
+for i in range(10):
     plt.plot(v_fraction_list[i], mean_time_list[i], label=pop_size_list[i][0])
 
 plt.legend(bbox_to_anchor=(1.05, 0.5), loc=6, borderaxespad=1., title='pop_size:')
@@ -87,7 +87,7 @@ plt.title("Test Parameters")
 plt.xlabel('max velocity fraction')
 plt.ylabel('fit value')
 
-for i in range(25):
+for i in range(10):
     plt.plot(v_fraction_list[i], mean_fit_list[i], label=pop_size_list[i][0])
 
 plt.legend(bbox_to_anchor=(1.05, 0.5), loc=6, borderaxespad=1., title='pop_size:')
