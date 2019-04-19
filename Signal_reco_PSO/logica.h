@@ -8,6 +8,8 @@
 #include <signal.h>
 #include <time.h>
 #include <math.h>
+#include <fftw3.h>
+#include <complex.h>
 
 #include "utils.h"
 
@@ -30,8 +32,8 @@ typedef struct {
 } Swarm;
 
 typedef struct {
-    int max;
-    int min;
+    float max;
+    float min;
 } Range;
 
 typedef struct {
@@ -39,25 +41,33 @@ typedef struct {
     int d;
     Range *param_range;
     float vmax;
+    int FFTlength;
 } Config;
 
 
 Config readConfigFile(char *filename);
 
-void createInitialPopulation(Config config, Swarm *swarm, float function(float x, float y));
+void createInitialPopulation(Config config, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus);
 
-void getFitValues(Config c, Swarm *swarm, float function(float x ,float y));
+void getFitValues(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus);
 
-void updateVelocity(Config c, Swarm *swarm, float function(float x ,float y));
+void updateVelocity(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2));
 
-void updateVelocity_vMax(Config c, Swarm *swarm, float function(float x, float y));
+void updateVelocity_vMax(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2));
 
-void updateVelocity_fixedWeights(Config c, Swarm *swarm, float function(float x, float y));
+void updateVelocity_fixedWeights(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2));
 
-void updateVelocity_decreasingInertia(Config c, Swarm *swarm, float function(float x, float y), int max_t);
+void updateVelocity_decreasingInertia(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), int max_t);
 
-void select_updateVelocity(int select, Config c, Swarm *swarm, float function(float x, float y), int max_t);
+void select_updateVelocity(int select, Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), int max_t);
 
 void updateParameters(Config c, Swarm *swarm);
+
+void sampleFunction(fftw_complex* in, fftw_complex* out, Config c, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), Particle particle, int best);
+
+float * FFTmodulus(fftw_complex* out, int N);
+
+float fitFunction(float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus, Config c, Particle particle, int best);
+
 
 #endif

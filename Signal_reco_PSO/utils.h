@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 #define DEBUG				1
-#define LENGTH 			    100
+#define LENGTH 			    200
 
 #define COLOR_DEBUG			"\x1b[33m"
 #define COLOR_RESET			"\x1b[0m"
