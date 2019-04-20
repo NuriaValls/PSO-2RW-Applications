@@ -16,3 +16,7 @@ psoAlgo
 # JUPYTER
 
 Referencies\ PSO/.*
+
+# LIBS
+
+fftw-*
