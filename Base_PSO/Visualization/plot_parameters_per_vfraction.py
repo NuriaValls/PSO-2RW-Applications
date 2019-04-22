@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from labellines import labelLine, labelLines
+#from labellines import labelLine, labelLines
 
 file = open('pop_fraction_parametrization.txt')
 
