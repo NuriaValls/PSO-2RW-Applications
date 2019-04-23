@@ -31,10 +31,10 @@ int main(int argc, char **argv) {
     float v_fraction[] = {0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1};
     int pop_fraction[] = {2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50};
     FILE *fp;
-    clock_t start, stop = 0;
+    //clock_t start, stop = 0;
 
 
-    fp=fopen("pop_fraction_parametrization.txt","w");
+    fp=fopen("converge_plot.txt","w");
 
     srand(time(NULL));
 
@@ -45,13 +45,13 @@ int main(int argc, char **argv) {
 
     config = readConfigFile(argv[1]);
 
-    for (int p = 0; p < 25; p++) {
+    //for (int p = 0; p < 25; p++) {
 
-        config.n = pop_fraction[p];
+    //    config.n = pop_fraction[p];
 
-        for (int v = 0; v < 9; v++) {
+    //    for (int v = 0; v < 9; v++) {
 
-            config.vmax = v_fraction[v];
+    //        config.vmax = v_fraction[v];
 
             for (int i = 0; i < 50; i++) {
 
@@ -62,13 +62,16 @@ int main(int argc, char **argv) {
                 double best_fit_compare;
                 int iter = 1000;
 
-                start = clock();
+                //start = clock();
 
                 createInitialPopulation(config, &swarm, function);
 
                 while (not_converged) {
 
                     getFitValues(config, &swarm, function);
+
+                    sprintf(msg, "%d %f /n", swarm.iterations, swarm.best_fit);
+                    fprintf(fp,msg);
 
                     best_fit_compare = trunc(swarm.best_fit * 100000000);
 
@@ -95,21 +98,21 @@ int main(int argc, char **argv) {
                     swarm.iterations++;
                 }
 
-                stop = clock();
+                //stop = clock();
 
-                sprintf(msg, "%d %f %d %f %lf/", pop_fraction[p], v_fraction[v], swarm.iterations, swarm.best_fit, (double)(stop - start) / CLOCKS_PER_SEC);
-                fprintf(fp, msg);
+                //sprintf(msg, "%d %f %d %f %lf/", pop_fraction[p], v_fraction[v], swarm.iterations, swarm.best_fit, (double)(stop - start) / CLOCKS_PER_SEC);
+                //fprintf(fp, msg);
 
             }
 
-            sprintf(msg, "\n");
-            fprintf(fp, msg);
+            //sprintf(msg, "\n");
+            //fprintf(fp, msg);
 
-        }
+        //}
 
-        sprintf(msg, "%d\n", p);
-        debug(msg);
-    }
+        //sprintf(msg, "%d\n", p);
+        //debug(msg);
+    //}
 
     fclose(fp);
 
