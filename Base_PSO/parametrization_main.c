@@ -4,7 +4,7 @@
 #include "logica.h"
 
 
-int select_velocity_method = 1;
+int select_velocity_method = 2;
 int convergence_factor = 100;
 
 
@@ -29,14 +29,16 @@ int main(int argc, char **argv) {
     Config config;
     char msg[LENGTH];
     float v_fraction[] = {0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1};
-    int pop_fraction[] = {2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50};
+    //float v_fraction[] = {0.9, 0.7, 0.5, 0.3, 0.1};
+    //int pop_fraction[] = {2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50};
+    int pop_fraction[] = {4, 10, 20, 50};
     FILE *fp;
     //clock_t start, stop = 0;
 
 
-    fp=fopen("converge_plot.txt","w");
-
-    srand(time(NULL));
+    //fp=fopen("simpler_version.txt","w");
+    fp = fopen("converge_plot.txt", "w");
+    //srand(time(NULL));
 
     if (!checkProgramArguments(argc)) {
         print(MSG_WRONG_ARGS);
@@ -45,7 +47,7 @@ int main(int argc, char **argv) {
 
     config = readConfigFile(argv[1]);
 
-    //for (int p = 0; p < 25; p++) {
+    //for (int p = 0; p < 4; p++) {
 
     //    config.n = pop_fraction[p];
 
@@ -53,7 +55,7 @@ int main(int argc, char **argv) {
 
     //        config.vmax = v_fraction[v];
 
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 1000; i++) {
 
                 Swarm swarm;
                 int count_convergence = 0;
@@ -70,7 +72,7 @@ int main(int argc, char **argv) {
 
                     getFitValues(config, &swarm, function);
 
-                    sprintf(msg, "%d %f /n", swarm.iterations, swarm.best_fit);
+                    sprintf(msg, "%d %f/", swarm.iterations, swarm.best_fit);
                     fprintf(fp,msg);
 
                     best_fit_compare = trunc(swarm.best_fit * 100000000);
@@ -100,6 +102,9 @@ int main(int argc, char **argv) {
 
                 //stop = clock();
 
+
+                sprintf(msg, "\n");
+                fprintf(fp,msg);
                 //sprintf(msg, "%d %f %d %f %lf/", pop_fraction[p], v_fraction[v], swarm.iterations, swarm.best_fit, (double)(stop - start) / CLOCKS_PER_SEC);
                 //fprintf(fp, msg);
 
