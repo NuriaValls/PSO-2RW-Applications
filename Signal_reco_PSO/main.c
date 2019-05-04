@@ -86,8 +86,9 @@ int main(int argc, char **argv) {
     double best_fit_local = 0.0;
     int not_converged = 1;
     double best_fit_compare;
-    int N = 64;
+    int N = 32;
     float * modulus;
+    float aux;
 
     srand(time(NULL));
 
@@ -102,14 +103,19 @@ int main(int argc, char **argv) {
 
     createInitialPopulation(config, &swarm, function, modulus);
 
+    for (int i = 0; i<config.FFTlength; i++) {
+        sprintf(msg, "%f, ", modulus[i]);
+        debug(msg);
+    }
+
     while (not_converged) {
 //    while (iter > 0) {
 
-        getFitValues(config, &swarm, function, modulus);
+        getFitValues(config, &swarm, function, modulus, 0);
 
         sprintf(msg, "I: %d, Best fit value: %f, Params: a0=%f a1=%f a2=%f w0=%f w1=%f w2=%f\n", swarm.iterations, swarm.best_fit,
                 swarm.best_params[0], swarm.best_params[2], swarm.best_params[4], swarm.best_params[1], swarm.best_params[3], swarm.best_params[5]);
-        debug(msg);
+        //debug(msg);
 
         best_fit_compare = trunc(swarm.best_fit * 100000000);
 
@@ -132,11 +138,19 @@ int main(int argc, char **argv) {
 
         if (count_convergence == convergence_factor) {
             not_converged = 0;
+            sprintf(msg, "\n\nI: %d, Best fit value: %f, Params: a0=%f a1=%f a2=%f w0=%f w1=%f w2=%f\n\n", swarm.iterations, swarm.best_fit,
+                    swarm.best_params[0], swarm.best_params[2], swarm.best_params[4], swarm.best_params[1], swarm.best_params[3], swarm.best_params[5]);
+            debug(msg);
         }
 
         iter--;
         swarm.iterations++;
     }
+
+
+    aux = fitFunction(function, modulus, config, swarm.particles[swarm.best_particle_idx], 0, 1);
+
+
 
 
     return EXIT_SUCCESS;

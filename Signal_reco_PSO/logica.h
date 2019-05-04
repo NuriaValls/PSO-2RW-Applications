@@ -29,6 +29,7 @@ typedef struct {
     float best_fit;
     int iterations;
     float *vmax;
+    int best_particle_idx;
 } Swarm;
 
 typedef struct {
@@ -49,7 +50,7 @@ Config readConfigFile(char *filename);
 
 void createInitialPopulation(Config config, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus);
 
-void getFitValues(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus);
+void getFitValues(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus, int print);
 
 void updateVelocity(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2));
 
@@ -67,7 +68,7 @@ void sampleFunction(fftw_complex* in, fftw_complex* out, Config c, float complex
 
 float * FFTmodulus(fftw_complex* out, int N);
 
-float fitFunction(float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus, Config c, Particle particle, int best);
+float fitFunction(float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus, Config c, Particle particle, int best, int print);
 
 
 #endif

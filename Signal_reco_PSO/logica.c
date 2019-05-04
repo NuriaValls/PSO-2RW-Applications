@@ -84,7 +84,7 @@ void createInitialPopulation(Config config, Swarm *swarm,
             p.best_params[j] = p.params[j];
         }
 
-        p.best_fit = fitFunction(function, original_modulus, config, p, 1);
+        p.best_fit = fitFunction(function, original_modulus, config, p, 1, 0);
         swarm->particles[i] = p;
     }
 
@@ -102,12 +102,12 @@ void createInitialPopulation(Config config, Swarm *swarm,
 
 void getFitValues(Config c, Swarm *swarm,
                   float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2),
-                  float *original_modulus) {
+                  float *original_modulus, int print) {
 
     for (int i = 0; i < c.n; i++) {
         float fit = 0;
 
-        fit = fitFunction(function, original_modulus, c, swarm->particles[i], 0);
+        fit = fitFunction(function, original_modulus, c, swarm->particles[i], 0, print);
 
         //printf("%f, %f, %f, %f --> %f\n", swarm->particles[i].params[0], swarm->particles[i].params[1], swarm->particles[i].params[2], swarm->particles[i].params[3], fit);
 
@@ -119,6 +119,7 @@ void getFitValues(Config c, Swarm *swarm,
         }
 
         if (fit < swarm->best_fit) {
+            swarm->best_particle_idx = i;
             swarm->best_fit = fit;
             for (int j = 0; j < c.d; j++) {
                 swarm->best_params[j] = swarm->particles[i].params[j];
@@ -332,11 +333,12 @@ float *FFTmodulus(fftw_complex *out, int N) {
 
 
 float fitFunction(float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2),
-                  float *original_modulus, Config c, Particle particle, int best) {
+                  float *original_modulus, Config c, Particle particle, int best, int print) {
 
     float difference = 0;
     fftw_complex *in, *out;
     float *modulus;
+    char msg[LENGTH];
 
     in = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * c.FFTlength);
     out = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * c.FFTlength);
@@ -344,6 +346,13 @@ float fitFunction(float complex function(float t, float a0, float w0, float a1, 
     sampleFunction(in, out, c, function, particle, best);
 
     modulus = FFTmodulus(out, c.FFTlength);
+
+    if (print == 1) {
+        for (int i = 0; i<c.FFTlength; i++) {
+            sprintf(msg, "%f, ", modulus[i]);
+            debug(msg);
+        }
+    }
 
     fftw_free(in);
     fftw_free(out);
