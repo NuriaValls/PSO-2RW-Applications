@@ -16,6 +16,7 @@ psoAlgo
 # JUPYTER
 
 Referencies\ PSO/.*
+.ipynb_checkpoints/
 
 # LIBS
 
