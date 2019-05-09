@@ -3,33 +3,41 @@
 #include "logica.h"
 
 #include <math.h>
-void init_weights(float weights[9]){
-    size_t n_rows = sizeof(weights) / sizeof(weights[0]);
-    char msg[100];
-    sprintf(msg, "%f\n", 3.4);
-    debug(msg);
-    for (int i = 0; i < n_rows; i++) {
+
+#define ROWS_DATA 50
+#define COLS_DATA 2
+#define INIT_WEIGHTS 9
+#define ROWS_W1 2
+#define COLS_W1 3
+#define ROWS_W2 3
+#define COLS_W2 1
+#define ROWS_DOT1 50
+#define COLS_DOT1 3
+#define ROWS_DOT2 50
+#define COLS_DOT2 1
+#define ROWS_Y 50
+#define COLS_Y 1
+
+
+void init_weights(float weights[INIT_WEIGHTS]){
+    for (int i = 0; i < INIT_WEIGHTS; i++) {
             float r = (float) rand();
             weights[i] = r / RAND_MAX;
         }
     }
 
-
-void X_train(float data[50][2]) {
-    size_t n_rows = sizeof(data) / sizeof(data[0]);
-    size_t n_cols = sizeof(data[0]) / sizeof(data[0][0]);
-    for (int i = 0; i < n_rows; i++) {
-        for (int j = 0; i < n_cols; j++) {
+void X_train(float data[ROWS_DATA][COLS_DATA]) {
+    for (int i = 0; i < ROWS_DATA; i++) {
+        for (int j = 0; j < COLS_DATA; j++) {
             float r = (float) rand();
             data[i][j] = 2 * r / RAND_MAX + -1;
         }
     }
 }
 
-void y_train(float data[50][2], float y[50]){
-    size_t n_rows = sizeof(data) / sizeof(data[0]);
-    for (int i = 0; i < n_rows; i++) {
-        if (data[i][1]){
+void y_train(float data[ROWS_DATA][COLS_DATA], float y[ROWS_Y]){
+    for (int i = 0; i < ROWS_DATA; i++) {
+        if (data[i][1]>=0){
             y[i] = 1;
         }
         else {
@@ -39,7 +47,7 @@ void y_train(float data[50][2], float y[50]){
 }
 
 float relu(float value){
-    if (value>0){
+    if (value>=0){
         return value;
     }
     else {
@@ -51,7 +59,7 @@ float sigmoid(float value){
     return 1/(1+exp(-value));
 }
 
-void arrange_weights(float individual[9], float matrix1[2][3], float matrix2[3][1]){
+void arrange_weights(float individual[INIT_WEIGHTS], float matrix1[ROWS_W1][COLS_W1], float matrix2[ROWS_W2][COLS_W2]){
     matrix1[0][0] = individual[0];
     matrix1[1][0] = individual[1];
     matrix1[0][1] = individual[2];
@@ -64,26 +72,26 @@ void arrange_weights(float individual[9], float matrix1[2][3], float matrix2[3][
     matrix2[2][0] = individual[8];
 }
 
-
-void matrix_multiplication1(float first[50][2], float second[2][3], float multiply[50][3]){
-    int sum = 0;
-    for (int c = 0; c < 50; c++) {
-        for (int d = 0; d < 2; d++) {
-            for (int k = 0; k < 2; k++) {
+void matrix_multiplication1(float first[ROWS_DATA][COLS_DATA], float second[ROWS_W1][COLS_W1], float multiply[ROWS_DOT1][COLS_DOT1]){
+    float sum = 0;
+    for (int c = 0; c < ROWS_DATA; c++) {
+        for (int d = 0; d < COLS_DOT1; d++) {
+            for (int k = 0; k < COLS_DATA; k++) {
                 sum = sum + first[c][k]*second[k][d];
             }
-
-            multiply[c][d] = relu(sum);
+            //sprintf(msg, "%f\n", sum);
+            //debug(msg);
+            multiply[c][d] = sum;
             sum = 0;
         }
     }
 }
 
-void matrix_multiplication2(float first2[50][3], float second2[3][1], float multiply2[50][1]){
-    int sum = 0;
-    for (int c = 0; c < 50; c++) {
-        for (int d = 0; d < 1; d++) {
-            for (int k = 0; k < 1; k++) {
+void matrix_multiplication2(float first2[ROWS_DOT1][COLS_DOT1], float second2[ROWS_W2][COLS_W2], float multiply2[ROWS_DOT2][COLS_DOT2]){
+    float sum = 0;
+    for (int c = 0; c < ROWS_DOT1; c++) {
+        for (int d = 0; d < COLS_DOT2; d++) {
+            for (int k = 0; k < COLS_DOT1; k++) {
                 sum = sum + first2[c][k]*second2[k][d];
             }
 
@@ -92,75 +100,64 @@ void matrix_multiplication2(float first2[50][3], float second2[3][1], float mult
         }
     }
 }
-//void mse_loss(float yhat, float actual_y)
 
-void fit_value(float multiply2[50][1]){//float weights[9], float matrix1[2][3],float matrix2[3][1],float data[50][2],float y[50],float multiply[50][3],float multiply2[50][1]){
-    float weights[9];
-    float matrix1[2][3];
-    float matrix2[3][1];
-    float data[50][2];
-    float y[50];
-    float multiply[50][3];
-    //float multiply2[50][1];
-    char msg[100];
-    sprintf(msg, "(%f)\n", 3.3);
+float mse_loss(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y]){
+    float sum = 0;
+    for (int i=0;i<ROWS_Y;i++){
+        sum = sum + pow((yhat[i][0]-actual_y[i]),2);
+    }
+    return sum/ROWS_DATA;
+}
+
+float accuracy(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y], float yhat_binary[ROWS_Y]) {
+    float sum = 0;
+    for (int i=0;i<ROWS_Y;i++){
+        if (yhat[i][0]>=0.5){
+            yhat_binary[i] = 1;
+            }
+        }
+    for (int i=0;i<ROWS_Y;i++){
+        if (yhat_binary[i] == actual_y[i]){
+            sum += 1;
+        }
+    }
+    return sum/ROWS_Y;
+}
+
+void fit_value(float multiply2[ROWS_DOT2][COLS_DOT2]){//float weights[9], float matrix1[2][3],float matrix2[3][1],float data[50][2],float y[50],float multiply[50][3],float multiply2[50][1]){
+    float weights[INIT_WEIGHTS];
+    float matrix1[ROWS_W1][COLS_W1];
+    float matrix2[ROWS_W2][COLS_W2];
+    float data[ROWS_DATA][COLS_DATA];
+    float y[ROWS_Y];
+    float yhat_binary[ROWS_Y];
+    float multiply[ROWS_DOT1][COLS_DOT1];
+    float loss;
+    float acc;
+    char msg[300];
+
     debug(msg);
-
     X_train(data);
     y_train(data, y);
     init_weights(weights);
     arrange_weights(weights, matrix1, matrix2);
-
     matrix_multiplication1(data, matrix1, multiply);
     matrix_multiplication2(multiply, matrix2, multiply2);
-
-    /*X_train(data[50][2]);
-    y_train(data[50][2], y[50]);
-    init_weights(weights[9]);
-    arrange_weights(weights[9], matrix1[2][3], matrix2[3]);
-
-    matrix_multiplication1(data[50][2], matrix1[2][3], multiply[50][3])
-    matrix_multiplication2(multiply[50][3], matrix2[3], multiply2[50][1])*/
-    //arrange_weights() //ha d'anar el vector de weights
-
-
-    //matrix_multiplication1(matrix1, matrix2, );
+    loss = mse_loss(multiply2,y);
+    acc = accuracy(multiply2,y,yhat_binary);
+    /*for (int l=0; l<50; l++) {
+        sprintf(msg, "%f\t%f\t%f\n", data[l][1], y[l], multiply2[l][0]);
+        debug(msg);
+    }*/
+    sprintf(msg, "The loss is %f with an accuracy of %f\n", loss, acc);
+    debug(msg);
 }
 
 
 int main(){
-    float multiply2[50][1];
-    srand(time(NULL));
-    /*float weights[9];
-    float matrix1[2][3];
-    float matrix2[3][1];
-    float data[50][2];
-    float y[50];
-    float multiply[50][3];
-    float multiply2[50][1];*/
-
     char msg[100];
-    //float arrange_ arrange_weights()
-    //float multiply[2][3];
-    //float multiply2[50][1];
-    fit_value(multiply2);//weights, matrix1, matrix2, data, y, multiply, multiply2
-    sprintf(msg, "%f\n", exp(2));
-    debug(msg);
-    sprintf(msg, "%f\n", multiply2[0][0]);
-    debug(msg);
-
-    //matrix_multiplication(first,second, multiply);
-    //sprintf(msg, "%f\n", multiply[1][0]);
-    //size_t shape = sizeof(multiply)/ sizeof(multiply[0]);
-    //size_t shape2 = sizeof(multiply[0])/ sizeof(multiply[0][0]);
-
-    //float r = (float) rand();
-    //sprintf(msg, "%f\n", 2 * r / RAND_MAX + -1);
-    //debug(msg);
-
-    //sprintf(msg, "%f\n", exp(2));
-    //debug(msg);
-    //sprintf(msg, "%d\n", shape2);
-    //debug(msg);
+    float multiply2[ROWS_DOT2][COLS_DOT2];
+    srand(time(NULL));
+    fit_value(multiply2);
 }
 
