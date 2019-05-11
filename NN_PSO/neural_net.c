@@ -1,24 +1,5 @@
-#include <stdlib.h>
 
-#include "logica.h"
-
-#include <math.h>
-
-#define ROWS_DATA 50
-#define COLS_DATA 2
-#define ROWS_TEST 20
-#define COLS_TEST 2
-#define INIT_WEIGHTS 9
-#define ROWS_W1 2
-#define COLS_W1 3
-#define ROWS_W2 3
-#define COLS_W2 1
-#define ROWS_DOT1 50
-#define COLS_DOT1 3
-#define ROWS_DOT2 50
-#define COLS_DOT2 1
-#define ROWS_Y 50
-#define COLS_Y 1
+#include "neural_net.h"
 
 //typedef struct {
 //    float **matrix;
@@ -97,21 +78,21 @@ void arrange_weights(float individual[INIT_WEIGHTS], float matrix1[ROWS_W1][COLS
     matrix2[2][0] = individual[8];
 }
 
-void matrix_multiplication(float **first, float **second, float **result, int first_rows, int first_cols, int second_rows, int second_cols) {
-    float sum;
-
-    if (first_cols != second_rows)
-        return;
-
-    for (int c = 0; c < first_rows; c++) {
-        for (int d = 0; d < second_cols; d++) {
-            for (int k = 0, sum = 0; k < first_cols; k++) {
-                sum += first[c][k] * second[k][d];
-            }
-            multiply[c][d] = sum;
-        }
-    }
-}
+//void matrix_multiplication(float **first, float **second, float **result, int first_rows, int first_cols, int second_rows, int second_cols) {
+//    float sum;
+//
+//    if (first_cols != second_rows)
+//        return;
+//
+//    for (int c = 0; c < first_rows; c++) {
+//        for (int d = 0; d < second_cols; d++) {
+//            for (int k = 0, sum = 0; k < first_cols; k++) {
+//                sum += first[c][k] * second[k][d];
+//            }
+//            multiply[c][d] = sum;
+//        }
+//    }
+//}
 
 //Matrix matrix_multiplication(Matrix arg1, Matrix arg2) {
 //    float sum;
@@ -194,8 +175,7 @@ void predict(float input[2], float matrix1[ROWS_W1][COLS_W1], float matrix2[ROWS
     matrix_multiplication1(dot1, matrix2, dot2);
 }
 
-float fit_value(
-        float weights[9]) {//float weights[9], float matrix1[2][3],float matrix2[3][1],float data[50][2],float y[50],float multiply[50][3],float multiply2[50][1]){
+float fit_value(float weights[9]) { //float weights[9], float matrix1[2][3],float matrix2[3][1],float data[50][2],float y[50],float multiply[50][3],float multiply2[50][1]){
     float multiply2[ROWS_DOT2][COLS_DOT2];
     //float weights[INIT_WEIGHTS];
     float matrix1[ROWS_W1][COLS_W1];
@@ -238,17 +218,3 @@ float fit_value(
     }*/
     return loss;
 }
-
-
-int main() {
-    char msg[100];
-    float weights[9];
-    init_weights(weights);
-    float loss;
-    srand(time(NULL));
-
-    loss = fit_value(weights);
-    sprintf(msg, "The loss is %f\n", loss);
-    debug(msg);
-}
-

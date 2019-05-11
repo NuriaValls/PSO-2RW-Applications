@@ -2,7 +2,6 @@
 
 #include "logica.h"
 
-#include "imports/Python.h"
 
 int select_velocity_method = 3;
 int convergence_factor = 100;
@@ -35,17 +34,6 @@ int main(int argc, char **argv) {
     int not_converged = 1;
     double best_fit_compare;
 
-    /*Py_Initialize();
-    PyObject* myModuleString = PyString_FromString((char*)"pyfunction");
-    PyObject* myModule = PyImport_Import(myModuleString);
-    PyObject* myFunction = PyObject_GetAttrString(myModule,(char*)"absolute");
-    PyObject* args=PyTuple_Pack(1,PyFloat_FromDouble(2.0));
-    PyObject* myResult = PyObject_CallObject(myFunction,args);
-    double result = PyFloat_AsDouble(myResult);
-
-    sprintf(msg, "%f\n", result);
-    debug(msg);*/
-
     srand(time(NULL));
 
     if (!checkProgramArguments(argc)) {
@@ -58,6 +46,7 @@ int main(int argc, char **argv) {
     createInitialPopulation(config, &swarm, function);
 
     while (not_converged) {
+    //while (iter > 0) {
 
         getFitValues(config, &swarm, function);
 

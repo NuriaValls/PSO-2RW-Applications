@@ -10,6 +10,7 @@
 #include <math.h>
 
 #include "utils.h"
+#include "neural_net.h"
 
 #define V_FIXED_WEIGHT_C 1.49445
 #define V_FIXED_WEIGHT_VI 0.729

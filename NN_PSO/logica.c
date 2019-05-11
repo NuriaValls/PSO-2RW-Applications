@@ -77,7 +77,9 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
             p.best_params[j] = p.params[j];
         }
 
-        p.best_fit = function(p.best_params[0], p.best_params[1]);
+        //p.best_fit = function(p.best_params[0], p.best_params[1]);
+        float weights[9] = {p.best_params[0], p.best_params[1], p.best_params[2], p.best_params[3], p.best_params[4], p.best_params[5], p.best_params[6], p.best_params[7], p.best_params[8]};
+        p.best_fit = fit_value(weights);
         swarm->particles[i] = p;
     }
 
@@ -98,7 +100,10 @@ void getFitValues(Config c, Swarm *swarm, float function(float x, float y)) {
     for (int i=0; i<c.n; i++) {
         float fit = 0;
 
-        fit = function(swarm->particles[i].params[0], swarm->particles[i].params[1]);
+        float weights[9] = {swarm->particles[i].params[0], swarm->particles[i].params[1], swarm->particles[i].params[2], swarm->particles[i].params[3], swarm->particles[i].params[4], swarm->particles[i].params[5], swarm->particles[i].params[6], swarm->particles[i].params[7], swarm->particles[i].params[8]};
+
+        fit = fit_value(weights);
+        //fit = function(swarm->particles[i].params[0], swarm->particles[i].params[1]);
 
         if (fit < swarm->particles[i].best_fit) {
             swarm->particles[i].best_fit = fit;

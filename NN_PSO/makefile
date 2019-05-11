@@ -1,6 +1,6 @@
 CFLAGS = -Wall -Wextra -lm -O5 -Wno-unused-variable -Wno-unused-parameter
-MAIN = aux_main.c
-MODULES = logica utils
+MAIN = main.c
+MODULES = logica utils neural_net
 EXE = psoAlgo
 
 FILES = $(MAIN) $(patsubst %, %.c, $(MODULES))
