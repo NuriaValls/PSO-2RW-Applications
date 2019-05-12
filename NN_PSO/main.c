@@ -52,8 +52,8 @@ int main(int argc, char **argv) {
 
         getFitValues(config, &swarm, function, &train_acc, &val_acc);
 
-        sprintf(msg, "I: %d, Best fit value: %f, train_acc = %f, val_acc = %f\n", swarm.iterations, swarm.best_fit,
-                swarm.best_params[0], swarm.best_params[1]);
+        sprintf(msg, "I: %d, Best fit value: %f, train_acc = %f, val_acc = %f\n",//%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t",
+                swarm.iterations, swarm.best_fit, train_acc, swarm.best_params[1]);//,swarm.best_params[0],swarm.best_params[1],swarm.best_params[2],swarm.best_params[3],swarm.best_params[4],swarm.best_params[5],swarm.best_params[6],swarm.best_params[7],swarm.best_params[8]);
         debug(msg);
 
         best_fit_compare = trunc(swarm.best_fit * 100000000);

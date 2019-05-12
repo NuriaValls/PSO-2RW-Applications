@@ -122,7 +122,7 @@ void matrix_multiplication1(float first[ROWS_DATA][COLS_DATA], float second[ROWS
             }
             //sprintf(msg, "%f\n", sum);
             //debug(msg);
-            multiply[c][d] = sum;
+            multiply[c][d] = relu(sum);
             sum = 0;
         }
     }
@@ -153,17 +153,39 @@ float mse_loss(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y]) {
 
 float accuracy(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y], float yhat_binary[ROWS_Y]) {
     float sum = 0;
+    float see_acc;
+    char msg[100];
+
+    /*for (int i=0;i<ROWS_Y;i++){
+        sprintf(msg, "%f\t%f\n", yhat[i][0], actual_y[i]);
+        debug(msg);
+    }*/
     for (int i = 0; i < ROWS_Y; i++) {
         if (yhat[i][0] >= 0.5) {
             yhat_binary[i] = 1;
+        }
+        else {
+            yhat_binary[i] = 0;
         }
     }
     for (int i = 0; i < ROWS_Y; i++) {
         if (yhat_binary[i] == actual_y[i]) {
             sum += 1;
         }
+        else {
+            sum += 0;
+        }
     }
-    return sum / ROWS_Y;
+
+    /*for (int i=0;i<ROWS_Y;i++){
+        sprintf(msg, "%f\t%f\n", yhat_binary[i], actual_y[i]);
+        debug(msg);
+    }*/
+
+    see_acc = sum/ROWS_Y;
+    //sprintf(msg, "%f\n", see_acc);
+    //debug(msg);
+    return see_acc;
 }
 
 /*void predict(float input[2], float matrix1[ROWS_W1][COLS_W1], float matrix2[ROWS_W2][COLS_W2],
@@ -205,6 +227,7 @@ float fit_value(float weights[9], float *train_acc, float *val_acc) { //float we
     matrix_multiplication2(multiply, matrix2, multiply2);
     loss = mse_loss(multiply2, y);
     *train_acc = accuracy(multiply2, y, yhat_binary);
+
     /*for (int i=0;i<ROWS_TEST;i++){
         predict(test[i], matrix1, matrix2, dot1, dot2);
         sprintf(msg, "%f\n", dot2[0]);
