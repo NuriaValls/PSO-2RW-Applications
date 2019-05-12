@@ -245,7 +245,7 @@ float fit_value(
 int main() {
     char msg[100];
     float weights[9];
-    //init_weights(weights);
+    init_weights(weights);
     float loss;
     srand(time(NULL));
 
