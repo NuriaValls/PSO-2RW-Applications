@@ -51,7 +51,7 @@ Config readConfigFile(char *filename) {
 }
 
 
-void createInitialPopulation(Config config, Swarm *swarm, float function(float x, float y)) {
+void createInitialPopulation(Config config, Swarm *swarm, float function(float x, float y), float *train_acc, float *val_acc) {
 
     swarm->particles = malloc((size_t) sizeof(Particle) * config.n);
 
@@ -79,7 +79,7 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
 
         //p.best_fit = function(p.best_params[0], p.best_params[1]);
         float weights[9] = {p.best_params[0], p.best_params[1], p.best_params[2], p.best_params[3], p.best_params[4], p.best_params[5], p.best_params[6], p.best_params[7], p.best_params[8]};
-        p.best_fit = fit_value(weights);
+        p.best_fit = fit_value(weights, train_acc, val_acc);
         swarm->particles[i] = p;
     }
 
@@ -95,7 +95,7 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
 }
 
 
-void getFitValues(Config c, Swarm *swarm, float function(float x, float y)) {
+void getFitValues(Config c, Swarm *swarm, float function(float x, float y), float *train_acc, float *val_acc) {
 
     for (int i=0; i<c.n; i++) {
         float fit = 0;
@@ -105,7 +105,7 @@ void getFitValues(Config c, Swarm *swarm, float function(float x, float y)) {
 
         float weights[9] = {swarm->particles[i].params[0], swarm->particles[i].params[1], swarm->particles[i].params[2], swarm->particles[i].params[3], swarm->particles[i].params[4], swarm->particles[i].params[5], swarm->particles[i].params[6], swarm->particles[i].params[7], swarm->particles[i].params[8]};
 
-        fit = fit_value(weights,*acc);
+        fit = fit_value(weights, train_acc, val_acc);
         //arrange_weights(weights,m1,m2);
         //fit = function(swarm->particles[i].params[0], swarm->particles[i].params[1]);
 

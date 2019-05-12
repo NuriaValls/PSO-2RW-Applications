@@ -33,6 +33,8 @@ int main(int argc, char **argv) {
     double best_fit_local = 0.0;
     int not_converged = 1;
     double best_fit_compare;
+    float train_acc = 0;
+    float val_acc = 0;
 
     srand(time(NULL));
 
@@ -43,12 +45,12 @@ int main(int argc, char **argv) {
 
     config = readConfigFile(argv[1]);
 
-    createInitialPopulation(config, &swarm, function);
+    createInitialPopulation(config, &swarm, function, &train_acc, &val_acc);
 
     while (not_converged) {
     //while (iter > 0) {
 
-        getFitValues(config, &swarm, function);
+        getFitValues(config, &swarm, function, &train_acc, &val_acc);
 
         sprintf(msg, "I: %d, Best fit value: %f, train_acc = %f, val_acc = %f\n", swarm.iterations, swarm.best_fit,
                 swarm.best_params[0], swarm.best_params[1]);

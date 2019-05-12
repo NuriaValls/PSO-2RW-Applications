@@ -175,7 +175,7 @@ float accuracy(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y], float yhat_bi
     matrix_multiplication1(dot1, matrix2, dot2);
 }*/
 
-float fit_value(float weights[9], float *acc) { //float weights[9], float matrix1[2][3],float matrix2[3][1],float data[50][2],float y[50],float multiply[50][3],float multiply2[50][1]){
+float fit_value(float weights[9], float *train_acc, float *val_acc) { //float weights[9], float matrix1[2][3],float matrix2[3][1],float data[50][2],float y[50],float multiply[50][3],float multiply2[50][1]){
     float multiply2[ROWS_DOT2][COLS_DOT2];
     //float weights[INIT_WEIGHTS];
     float matrix1[ROWS_W1][COLS_W1];
@@ -204,7 +204,7 @@ float fit_value(float weights[9], float *acc) { //float weights[9], float matrix
     matrix_multiplication1(data, matrix1, multiply);
     matrix_multiplication2(multiply, matrix2, multiply2);
     loss = mse_loss(multiply2, y);
-    *acc = accuracy(multiply2, y, yhat_binary);
+    *train_acc = accuracy(multiply2, y, yhat_binary);
     /*for (int i=0;i<ROWS_TEST;i++){
         predict(test[i], matrix1, matrix2, dot1, dot2);
         sprintf(msg, "%f\n", dot2[0]);

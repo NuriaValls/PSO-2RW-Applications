@@ -33,6 +33,6 @@ void matrix_multiplication2(float first2[ROWS_DOT1][COLS_DOT1], float second2[RO
 float mse_loss(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y]);
 float accuracy(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y], float yhat_binary[ROWS_Y]);
 void predict(float input[2], float matrix1[ROWS_W1][COLS_W1], float matrix2[ROWS_W2][COLS_W2], float dot1[ROWS_DOT1][COLS_DOT1], float dot2[1]);
-float fit_value(float weights[9]);
+float fit_value(float weights[9], float *train_acc, float *val_acc);
 
 #endif

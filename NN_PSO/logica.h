@@ -45,9 +45,9 @@ typedef struct {
 
 Config readConfigFile(char *filename);
 
-void createInitialPopulation(Config config, Swarm *swarm, float function(float x, float y));
+void createInitialPopulation(Config config, Swarm *swarm, float function(float x, float y), float *train_acc, float *val_acc);
 
-void getFitValues(Config c, Swarm *swarm, float function(float x ,float y));
+void getFitValues(Config c, Swarm *swarm, float function(float x, float y), float *train_acc, float *val_acc);
 
 void updateVelocity(Config c, Swarm *swarm, float function(float x ,float y));
 
