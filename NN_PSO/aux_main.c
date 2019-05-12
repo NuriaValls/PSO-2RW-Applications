@@ -225,6 +225,8 @@ float fit_value(
     matrix_multiplication2(multiply, matrix2, multiply2);
     loss = mse_loss(multiply2, y);
     acc = accuracy(multiply2, y, yhat_binary);
+    //sprintf(msg, "%f\n", acc);
+    //debug(msg);
     /*for (int i=0;i<ROWS_TEST;i++){
         predict(test[i], matrix1, matrix2, dot1, dot2);
         sprintf(msg, "%f\n", dot2[0]);
@@ -243,7 +245,7 @@ float fit_value(
 int main() {
     char msg[100];
     float weights[9];
-    init_weights(weights);
+    //init_weights(weights);
     float loss;
     srand(time(NULL));
 

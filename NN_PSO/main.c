@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
 
         getFitValues(config, &swarm, function);
 
-        sprintf(msg, "I: %d, Best fit value: %f, Params: x=%f y=%f\n", swarm.iterations, swarm.best_fit,
+        sprintf(msg, "I: %d, Best fit value: %f, train_acc = %f, val_acc = %f\n", swarm.iterations, swarm.best_fit,
                 swarm.best_params[0], swarm.best_params[1]);
         debug(msg);
 

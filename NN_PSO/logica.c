@@ -99,10 +99,14 @@ void getFitValues(Config c, Swarm *swarm, float function(float x, float y)) {
 
     for (int i=0; i<c.n; i++) {
         float fit = 0;
+        float *acc;
+        //float m1[2][3];
+        //float m2[3][1];
 
         float weights[9] = {swarm->particles[i].params[0], swarm->particles[i].params[1], swarm->particles[i].params[2], swarm->particles[i].params[3], swarm->particles[i].params[4], swarm->particles[i].params[5], swarm->particles[i].params[6], swarm->particles[i].params[7], swarm->particles[i].params[8]};
 
-        fit = fit_value(weights);
+        fit = fit_value(weights,*acc);
+        //arrange_weights(weights,m1,m2);
         //fit = function(swarm->particles[i].params[0], swarm->particles[i].params[1]);
 
         if (fit < swarm->particles[i].best_fit) {
