@@ -3,7 +3,7 @@
 #include "logica.h"
 
 
-int select_velocity_method = 2;
+int select_velocity_method = 3;
 int convergence_factor = 100;
 
 

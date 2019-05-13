@@ -4,7 +4,7 @@
 #include "logica.h"
 
 
-int select_velocity_method = 2;
+//int select_velocity_method = 1;
 int convergence_factor = 100;
 
 
@@ -33,12 +33,12 @@ int main(int argc, char **argv) {
     //int pop_fraction[] = {2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50};
     int pop_fraction[] = {4, 10, 20, 50};
     FILE *fp;
-    //clock_t start, stop = 0;
+    clock_t start, stop = 0;
 
 
-    //fp=fopen("simpler_version.txt","w");
-    fp = fopen("converge_plot.txt", "w");
-    //srand(time(NULL));
+    //fp=fopen("simpler_version2.txt","w");
+    fp = fopen("converge_plot_compare.txt", "w");
+    srand(time(NULL));
 
     if (!checkProgramArguments(argc)) {
         print(MSG_WRONG_ARGS);
@@ -47,13 +47,15 @@ int main(int argc, char **argv) {
 
     config = readConfigFile(argv[1]);
 
+    for (int m = 1; m<4; m++) {
+        int select_velocity_method = m;
     //for (int p = 0; p < 4; p++) {
 
     //    config.n = pop_fraction[p];
 
     //    for (int v = 0; v < 9; v++) {
 
-    //        config.vmax = v_fraction[v];
+    //       config.vmax = v_fraction[v];
 
             for (int i = 0; i < 1000; i++) {
 
@@ -64,7 +66,7 @@ int main(int argc, char **argv) {
                 double best_fit_compare;
                 int iter = 1000;
 
-                //start = clock();
+                start = clock();
 
                 createInitialPopulation(config, &swarm, function);
 
@@ -72,7 +74,7 @@ int main(int argc, char **argv) {
 
                     getFitValues(config, &swarm, function);
 
-                    sprintf(msg, "%d %f/", swarm.iterations, swarm.best_fit);
+                    sprintf(msg, "%d %d %f/", select_velocity_method, swarm.iterations, swarm.best_fit);
                     fprintf(fp,msg);
 
                     best_fit_compare = trunc(swarm.best_fit * 100000000);
@@ -100,7 +102,7 @@ int main(int argc, char **argv) {
                     swarm.iterations++;
                 }
 
-                //stop = clock();
+                stop = clock();
 
 
                 sprintf(msg, "\n");
@@ -110,10 +112,10 @@ int main(int argc, char **argv) {
 
             }
 
-            //sprintf(msg, "\n");
+            //sprintf(msg, "\nv");
             //fprintf(fp, msg);
 
-        //}
+        }
 
         //sprintf(msg, "%d\n", p);
         //debug(msg);
