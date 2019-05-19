@@ -48,9 +48,9 @@ typedef struct {
 
 Config readConfigFile(char *filename);
 
-void createInitialPopulation(Config config, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus);
+void createInitialPopulation(Config config, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus, int resize);
 
-void getFitValues(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus, int print);
+void getFitValues(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus, int print, int resize);
 
 void updateVelocity(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2));
 
@@ -64,11 +64,11 @@ void select_updateVelocity(int select, Config c, Swarm *swarm, float complex fun
 
 void updateParameters(Config c, Swarm *swarm);
 
-void sampleFunction(fftw_complex* in, fftw_complex* out, Config c, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), Particle particle, int best);
+void sampleFunction(fftw_complex* in, fftw_complex* out, Config c, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), Particle particle, int best, int resize);
 
 float * FFTmodulus(fftw_complex* out, int N);
 
-float fitFunction(float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus, Config c, Particle particle, int best, int print);
+float fitFunction(float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus, Config c, Particle particle, int best, int print, int resize);
 
 
 #endif

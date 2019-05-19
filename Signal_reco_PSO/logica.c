@@ -57,7 +57,7 @@ Config readConfigFile(char *filename) {
 
 void createInitialPopulation(Config config, Swarm *swarm,
                              float complex function(float t, float a0, float w0, float a1, float w1, float a2,
-                                                    float w2), float *original_modulus) {
+                                                    float w2), float *original_modulus, int resize) {
 
     swarm->particles = malloc((size_t) sizeof(Particle) * config.n);
 
@@ -84,7 +84,7 @@ void createInitialPopulation(Config config, Swarm *swarm,
             p.best_params[j] = p.params[j];
         }
 
-        p.best_fit = fitFunction(function, original_modulus, config, p, 1, 0);
+        p.best_fit = fitFunction(function, original_modulus, config, p, 1, 0, resize);
         swarm->particles[i] = p;
     }
 
@@ -102,12 +102,12 @@ void createInitialPopulation(Config config, Swarm *swarm,
 
 void getFitValues(Config c, Swarm *swarm,
                   float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2),
-                  float *original_modulus, int print) {
+                  float *original_modulus, int print, int resize) {
 
     for (int i = 0; i < c.n; i++) {
         float fit = 0;
 
-        fit = fitFunction(function, original_modulus, c, swarm->particles[i], 0, print);
+        fit = fitFunction(function, original_modulus, c, swarm->particles[i], 0, print, resize);
 
         //printf("%f, %f, %f, %f --> %f\n", swarm->particles[i].params[0], swarm->particles[i].params[1], swarm->particles[i].params[2], swarm->particles[i].params[3], fit);
 
@@ -290,7 +290,7 @@ void updateParameters(Config c, Swarm *swarm) {
 
 void sampleFunction(fftw_complex *in, fftw_complex *out, Config c,
                     float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2),
-                    Particle particle, int best) {
+                    Particle particle, int best, int resize) {
 
     fftw_plan p;
 
@@ -300,13 +300,24 @@ void sampleFunction(fftw_complex *in, fftw_complex *out, Config c,
     for (int idx = 0; idx < c.FFTlength; idx++) {
         float f;
 
-        if (best == 1) {
-            f = function(idx, particle.best_params[0], particle.best_params[1], particle.best_params[2],
-                         particle.best_params[3], particle.best_params[4], particle.best_params[5]);
+        if (resize == 0) {
+            if (best == 1) {
+                f = function(idx, particle.best_params[0], particle.best_params[1], particle.best_params[2],
+                             particle.best_params[3], particle.best_params[4], particle.best_params[5]);
+            } else {
+                f = function(idx, particle.params[0], particle.params[1], particle.params[2], particle.params[3],
+                             particle.params[4], particle.params[5]);
+            }
         } else {
-            f = function(idx, particle.params[0], particle.params[1], particle.params[2], particle.params[3],
-                         particle.params[4], particle.params[5]);
+            if (best == 1) {
+                f = function(idx, particle.best_params[0], particle.best_params[1], 0,
+                             0, 0, 0);
+            } else {
+                f = function(idx, particle.params[0], particle.params[1], 0, 0,
+                             0, 0);
+            }
         }
+
 
         in[idx][0] = creal(f);
         in[idx][1] = cimag(f);
@@ -333,7 +344,7 @@ float *FFTmodulus(fftw_complex *out, int N) {
 
 
 float fitFunction(float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2),
-                  float *original_modulus, Config c, Particle particle, int best, int print) {
+                  float *original_modulus, Config c, Particle particle, int best, int print, int resize) {
 
     float difference = 0;
     fftw_complex *in, *out;
@@ -343,7 +354,7 @@ float fitFunction(float complex function(float t, float a0, float w0, float a1, 
     in = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * c.FFTlength);
     out = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * c.FFTlength);
 
-    sampleFunction(in, out, c, function, particle, best);
+    sampleFunction(in, out, c, function, particle, best, resize);
 
     modulus = FFTmodulus(out, c.FFTlength);
 
