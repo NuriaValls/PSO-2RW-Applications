@@ -1,12 +1,25 @@
 
 #include "neural_net.h"
 
-//typedef struct {
-//    float **matrix;
-//    int cols;
-//    int rows;
-//} Matrix;
+typedef struct {
+    float **matrix;
+    int rows;
+    int cols;
+} Matrix;
 
+Matrix MAT_create(int rows, int cols) {
+    Matrix m;
+
+    m.rows = rows;
+    m.cols = cols;
+    m.matrix = malloc(sizeof(float *) * m.rows);
+
+    for (int i = 0; i < cols; i++) {
+        m.matrix[i] = malloc(sizeof(float) * m.cols);
+    }
+
+    return m;
+}
 
 void init_weights(float weights[INIT_WEIGHTS]) {
     for (int i = 0; i < INIT_WEIGHTS; i++) {

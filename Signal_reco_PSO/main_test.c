@@ -83,7 +83,7 @@ void convergenceLoop (Config config, Swarm *swarm, float *modulus, int resize) {
     char msg[LENGTH];
     double best_fit_compare;
     double best_fit_local = 0.0;
-    int iter = 100000000;
+    int iter = 10000000;
     int count_convergence = 0;
 
     while (not_converged) {
@@ -210,7 +210,12 @@ int main(int argc, char **argv) {
 
     for (int i = 0; i<config.FFTlength; i++) {
         subs_modulus2[i] = fabs(fabs(subs_modulus1[i]) - fabs(modulus2[i]));
+        sprintf(msg, "%f, ", subs_modulus2[i]);
+        //debug(msg);
     }
+
+    sprintf(msg, "\n\n");
+    //debug(msg);
 
     // Busquem el tercer pic
     Swarm swarm3;
@@ -228,10 +233,10 @@ int main(int argc, char **argv) {
     p.params[4] = swarm3.best_params[0];
     p.params[5] = swarm3.best_params[1];
 
-    float final_fit = fitFunction(function, modulus, config, p, 0, 1, 0);
+    float final_fit = fitFunction(function, modulus, config, p, 0, 0, 0);
 
     sprintf(msg, "\n\n");
-    debug(msg);
+    //debug(msg);
 
     float *modulus3;
     float *subs_modulus3 = malloc(sizeof(float) * (config.FFTlength));
@@ -241,7 +246,7 @@ int main(int argc, char **argv) {
     for (int i = 0; i<config.FFTlength; i++) {
         subs_modulus3[i] = fabs(fabs(subs_modulus2[i]) - fabs(modulus3[i]));
         sprintf(msg, "%f, ", subs_modulus3[i]);
-        debug(msg);
+        //debug(msg);
     }
 
     sprintf(msg, "\n\n>>>>> Best fit value: %f, Params: a0=%f a1=%f a2=%f w0=%f w1=%f w2=%f\n\n", swarm3.best_fit,
@@ -250,143 +255,7 @@ int main(int argc, char **argv) {
 
 
     //aux = fitFunction(function, modulus, config, swarm.particles[swarm.best_particle_idx], 0, 1, 0);
-    /*int iter_pics = 1;
 
-    while(iter_pics > 0) {
-        iter_pics--;
-
-        float *first_modulus;
-        float *subs_modulus = malloc(sizeof(float) * (config.FFTlength));
-
-        float myFloatArr[3] = {swarm.best_params[0], swarm.best_params[2], swarm.best_params[4]};
-        float myFloatArr2[3] = {swarm.best_params[1], swarm.best_params[3], swarm.best_params[5]};
-        int myFloatIndex[3] = {0, 1, 2};
-
-
-        orderByValue(myFloatArr, myFloatIndex);
-
-
-        float first_a[2] = {myFloatArr[myFloatIndex[1]],myFloatArr[myFloatIndex[2]]};
-        float first_w[2] = {myFloatArr2[myFloatIndex[1]],myFloatArr2[myFloatIndex[2]]};
-
-        sprintf(msg, "First amplitudes = %f, %f, First frequencies: %f, %f\n", first_a[0], first_a[1], first_w[0], first_w[1]);
-        debug(msg);
-
-        first_modulus = solutionInput(config, first_a[0], first_w[0], first_a[1], first_w[1], 0, 0);
-
-        for (int i = 0; i<config.FFTlength; i++) {
-            subs_modulus[i] = fabs(fabs(modulus[i]) - fabs(first_modulus[i]));
-        }
-
-        for (int i = 0; i<config.FFTlength; i++) {
-            sprintf(msg, "%f, ", subs_modulus[i]);
-            //debug(msg);
-        }
-
-        // Optimitzem el primer pic
-        Swarm swarm2;
-
-        config.d = 2;
-
-        createInitialPopulation(config, &swarm2, function, subs_modulus, 1);
-
-        convergenceLoop(config, &swarm2, subs_modulus, 1);
-
-        // *************************************************
-
-        //orderByValue(myFloatArr, myFloatIndex);
-
-        float second_a[2] = {myFloatArr[myFloatIndex[0]],myFloatArr[myFloatIndex[2]]};
-        float second_w[2] = {myFloatArr2[myFloatIndex[0]],myFloatArr2[myFloatIndex[2]]};
-
-        sprintf(msg, "Second amplitudes = %f, %f, Second frequencies: %f, %f\n", second_a[0], second_a[1], second_w[0], second_w[1]);
-        debug(msg);
-
-        float *second_modulus;
-        float *subs2_modulus = malloc(sizeof(float) * (config.FFTlength));
-
-        second_modulus = solutionInput(config, second_a[0], second_w[0], second_a[1], second_w[1], 0, 0);
-
-        for (int i = 0; i<config.FFTlength; i++) {
-            subs2_modulus[i] = fabs(fabs(modulus[i]) - fabs(second_modulus[i]));
-        }
-
-        for (int i = 0; i<config.FFTlength; i++) {
-            sprintf(msg, "%f, ", subs2_modulus[i]);
-            //debug(msg);
-        }
-
-        // Optimitzem el primer pic
-        Swarm swarm3;
-
-        config.d = 2;
-
-        createInitialPopulation(config, &swarm3, function, subs2_modulus, 1);
-
-        convergenceLoop(config, &swarm3, subs2_modulus, 1);
-
-        // *************************************************
-
-        float third_a[2] = {myFloatArr[myFloatIndex[0]],myFloatArr[myFloatIndex[1]]};
-        float third_w[2] = {myFloatArr2[myFloatIndex[0]],myFloatArr2[myFloatIndex[1]]};
-
-        sprintf(msg, "Third amplitudes = %f, %f, Third frequencies: %f, %f\n", third_a[0], third_a[1], third_w[0], third_w[1]);
-        debug(msg);
-
-        float *third_modulus;
-        float *subs3_modulus = malloc(sizeof(float) * (config.FFTlength));
-
-        third_modulus = solutionInput(config, third_a[0], third_w[0], third_a[1], third_w[1], 0, 0);
-
-        for (int i = 0; i<config.FFTlength; i++) {
-            subs3_modulus[i] = fabs(fabs(modulus[i]) - fabs(third_modulus[i]));
-        }
-
-        for (int i = 0; i<config.FFTlength; i++) {
-            sprintf(msg, "%f, ", subs3_modulus[i]);
-            //debug(msg);
-        }
-
-        // Optimitzem el primer pic
-        Swarm swarm4;
-
-        config.d = 2;
-
-        createInitialPopulation(config, &swarm4, function, subs3_modulus, 1);
-
-        convergenceLoop(config, &swarm4, subs3_modulus, 1);
-
-
-        swarm.best_params[0] = swarm2.best_params[0];
-        swarm.best_params[1] = swarm2.best_params[1];
-        swarm.best_params[2] = swarm3.best_params[0];
-        swarm.best_params[3] = swarm3.best_params[1];
-        swarm.best_params[4] = swarm4.best_params[0];
-        swarm.best_params[5] = swarm4.best_params[1];
-
-        sprintf(msg, "*");
-        debug(msg);
-
-    }
-
-    sprintf(msg, "\n\n>>>>> Best fit value: %f, Params: a0=%f a1=%f a2=%f w0=%f w1=%f w2=%f\n\n", swarm.best_fit,
-            swarm.best_params[0], swarm.best_params[2], swarm.best_params[4], swarm.best_params[1], swarm.best_params[3], swarm.best_params[5]);
-    debug(msg);
-
-    Particle p;
-    p.params = malloc((size_t) sizeof(float) * 6);
-    p.params[0] = swarm.best_params[0];
-    p.params[1] = swarm.best_params[1];
-    p.params[2] = swarm.best_params[2];
-    p.params[3] = swarm.best_params[3];
-    p.params[4] = swarm.best_params[4];
-    p.params[5] = swarm.best_params[5];
-
-    float a = fitFunction(function, modulus, config, p, 0, 0, 0);
-
-    sprintf(msg, "\n%f\n", a);
-    debug(msg);
-*/
 
     return EXIT_SUCCESS;
 
