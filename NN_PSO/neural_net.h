@@ -20,6 +20,11 @@
 #define ROWS_Y 50
 #define COLS_Y 1
 
+#define N_LAYERS 3
+#define NEURONS_INPUT 2
+#define NEURONS_OUTPUT 1
+#define NEURONS_HIDDEN 3
+
 void init_weights(float weights[INIT_WEIGHTS]);
 void X_train(float data[ROWS_DATA][COLS_DATA]);
 void X_test(float test[ROWS_TEST][COLS_TEST]);
