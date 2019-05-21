@@ -1,12 +1,6 @@
 
 #include "neural_net.h"
 
-typedef struct {
-    float **matrix;
-    int cols;
-    int rows;
-    double** data;
-} Matrix;
 
 Matrix MAT_create(int rows, int cols){
     Matrix m;
@@ -17,31 +11,34 @@ Matrix MAT_create(int rows, int cols){
     for (int i = 0; i < cols; i++){
         m.matrix[i] = malloc(sizeof(float)*m.cols);
     }
-
     return m;
 }
 
 Matrix X_train() {
-    Matrix data = MAT_create(ROWS_DATA, COLS_DATA);
+    Matrix data;
+    data = MAT_create(ROWS_DATA, COLS_DATA);
     for (int i = 0; i < data.rows; i++) {
         for (int j = 0; j < data.cols; j++) {
             float r = (float) rand();
-            data[i][j] = 2 * r / RAND_MAX + -1;
+            data.matrix[i][j] = 2 * r / RAND_MAX + -1;
         }
     }
+    char msg[100];
+    sprintf(msg, "%f\t%f\n", data.matrix[0][0], data.matrix[0][1]);
+    debug(msg);
     return data;
 }
 
-void X_test(float test[ROWS_TEST][COLS_TEST]) {
+/*void X_test(float test[ROWS_TEST][COLS_TEST]) {
     for (int i = 0; i < ROWS_TEST; i++) {
         for (int j = 0; j < COLS_TEST; j++) {
             float r = (float) rand();
             test[i][j] = 2 * r / RAND_MAX + -1;
         }
     }
-}
+}*/
 
-void y_train(float data[ROWS_DATA][COLS_DATA], float y[ROWS_Y]) {
+/*void y_train(float data[ROWS_DATA][COLS_DATA], float y[ROWS_Y]) {
     for (int i = 0; i < ROWS_DATA; i++) {
         if (data[i][1] >= 0) {
             y[i] = 1;
@@ -49,9 +46,23 @@ void y_train(float data[ROWS_DATA][COLS_DATA], float y[ROWS_Y]) {
             y[i] = 0;
         }
     }
+}*/
+
+Matrix y_train(Matrix data) {
+    Matrix y;
+    y = MAT_create(data.rows, 1);
+    for (int i = 0; i < data.rows; i++) {
+        if (data.matrix[i][1] >= 0) {
+            y.matrix[i][0] = 1;
+        } else {
+            y.matrix[i][0] = 0;
+        }
+    }
+    return y;
 }
 
-void make_y_test(float test[ROWS_TEST][COLS_TEST], float y_test[ROWS_TEST]) {
+
+/*void make_y_test(float test[ROWS_TEST][COLS_TEST], float y_test[ROWS_TEST]) {
     for (int i = 0; i < ROWS_TEST; i++) {
         if (test[i][1] >= 0) {
             y_test[i] = 1;
@@ -59,7 +70,7 @@ void make_y_test(float test[ROWS_TEST][COLS_TEST], float y_test[ROWS_TEST]) {
             y_test[i] = 0;
         }
     }
-}
+}*/
 
 float relu(float value) {
     if (value >= 0) {
@@ -106,10 +117,7 @@ float sigmoid(float value) {
 
 Matrix matrix_multiplication(Matrix arg1, Matrix arg2) {
     float sum;
-    Matrix result = MATRIX_CREATE(arg1.rows, arg2.cols);
-
-    if (arg1.cols != arg2.rows)
-        return NULL;
+    Matrix result = MAT_create(arg1.rows, arg2.cols);
 
     for (int c = 0; c < arg1.rows; c++) {
         for (int d = 0; d < arg2.cols; d++) {
@@ -153,11 +161,16 @@ Matrix matrix_multiplication(Matrix arg1, Matrix arg2) {
     }
 }*/
 
-float mse_loss(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y]) {
+float mse_loss(Matrix actual_y, Matrix yhat) {
     float sum = 0;
     for (int i = 0; i < ROWS_Y; i++) {
-        sum = sum + pow((yhat[i][0] - actual_y[i]), 2);
+        sum = sum + pow((yhat.matrix[i][0] - actual_y.matrix[i][0]), 2);
     }
+    float l;
+    //char msg;
+    //l = sum/ROWS_DATA;
+    //sprintf(msg, "%f", l);
+    //debug(msg);
     return sum / ROWS_DATA;
 }
 
@@ -209,11 +222,12 @@ float accuracy(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y], float yhat_bi
 
 float fit_value(float weights[9], float *train_acc, float *val_acc) { //float weights[9], float matrix1[2][3],float matrix2[3][1],float data[50][2],float y[50],float multiply[50][3],float multiply2[50][1]){
     Matrix output;
-    float weights[INIT_WEIGHTS];
+    //float weights[INIT_WEIGHTS];
     //float matrix1[ROWS_W1][COLS_W1];
     //float matrix2[ROWS_W2][COLS_W2];
-    Matrix data[ROWS_DATA][COLS_DATA];
-    float y[ROWS_Y];
+    Matrix data;
+    data = MAT_create(ROWS_DATA, COLS_DATA);
+    Matrix y = MAT_create(data.rows, 1);
     float test[ROWS_TEST][COLS_TEST];
     float y_test[ROWS_TEST];
 
@@ -224,15 +238,15 @@ float fit_value(float weights[9], float *train_acc, float *val_acc) { //float we
 
 
     data = X_train();
-    y_train(data, y);
-    X_test(test);
-    make_y_test(test, y_test);
+    y = y_train(data);
+    //X_test(test);
+    //make_y_test(test, y_test);
 
     //init_weights(weights);
-    float architecture[N_LAYERS] = [2,3,1];
-    float dim_weights[N_LAYERS-1];
+    float architecture[N_LAYERS] = {2,3,1};
+    int dim_weights[N_LAYERS-1];
 
-    for (int i = 0; i < N_LAYERS-1, i++){
+    for (int i = 0; i < N_LAYERS-1; i++){
         dim_weights[i] = architecture[i]*architecture[i+1];
     }
     /*float n_weights=0;
@@ -244,8 +258,8 @@ float fit_value(float weights[9], float *train_acc, float *val_acc) { //float we
     activated = data;
 
     for (int i = 0; i < N_LAYERS-1; i++){
-        float count = 0;
-        float n_weights = n_weights_matrices[i];
+        int count = 0;
+        int n_weights = dim_weights[i];
         float vector_weights[dim_weights[i]];
         Matrix w_matrix;
 
@@ -259,18 +273,16 @@ float fit_value(float weights[9], float *train_acc, float *val_acc) { //float we
 
         for (int j = 0; j < architecture[i]; j++){
             for (int k = 0; k < architecture[i+1]; k++){
-                w_matrix[j][k] = vector_weights[count];
+                w_matrix.matrix[j][k] = vector_weights[count];
                 count = count + 1;
             }
         }
 
         activated = matrix_multiplication(activated, w_matrix);
-
-
     }
 
-    loss = mse_loss(output, y);
-    *train_acc = accuracy(output, y, yhat_binary);
+    loss = mse_loss(activated, y);
+    //*train_acc = accuracy(output, y, yhat_binary);
 
     /*for (int i=0;i<ROWS_TEST;i++){
         predict(test[i], matrix1, matrix2, dot1, dot2);
