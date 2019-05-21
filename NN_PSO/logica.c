@@ -79,7 +79,11 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
         }
 
         //p.best_fit = function(p.best_params[0], p.best_params[1]);
+        char msg[300];
         float weights[9] = {p.best_params[0], p.best_params[1], p.best_params[2], p.best_params[3], p.best_params[4], p.best_params[5], p.best_params[6], p.best_params[7], p.best_params[8]};
+        //sprintf(msg, "%f\n", p.best_params[0]);
+        //debug(msg);
+
         p.best_fit = fit_value(weights, train_acc, val_acc);
         swarm->particles[i] = p;
     }
