@@ -45,7 +45,11 @@ int main(int argc, char **argv) {
 
     config = readConfigFile(argv[1]);
 
+    sprintf(msg, "\n1\n");
+    debug(msg);
+
     createInitialPopulation(config, &swarm, function, &train_acc, &val_acc);
+
 
     while (not_converged) {
     //while (iter > 0) {

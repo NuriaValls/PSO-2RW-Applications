@@ -54,6 +54,7 @@ Config readConfigFile(char *filename) {
 void createInitialPopulation(Config config, Swarm *swarm, float function(float x, float y), float *train_acc, float *val_acc) {
 
     swarm->particles = malloc((size_t) sizeof(Particle) * config.n);
+    char msg[LENGTH];
 
     for (int i = 0; i < config.n; i++) {
         Particle p;

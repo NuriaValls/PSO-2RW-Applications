@@ -8,8 +8,8 @@ Matrix MAT_create(int rows, int cols){
     m.cols = cols;
     m.matrix = malloc(sizeof(float *) * m.rows);
 
-    for (int i = 0; i < cols; i++){
-        m.matrix[i] = malloc(sizeof(float)*m.cols);
+    for (int i = 0; i < rows; i++){
+        m.matrix[i] = malloc(sizeof(float)*cols);
     }
     return m;
 }
@@ -17,14 +17,16 @@ Matrix MAT_create(int rows, int cols){
 Matrix X_train() {
     Matrix data;
     data = MAT_create(ROWS_DATA, COLS_DATA);
+    char msg[LENGTH];
+
     for (int i = 0; i < data.rows; i++) {
         for (int j = 0; j < data.cols; j++) {
             float r = (float) rand();
             data.matrix[i][j] = 2 * r / RAND_MAX + -1;
+
         }
     }
-    char msg[100];
-    sprintf(msg, "%f\t%f\n", data.matrix[0][0], data.matrix[0][1]);
+    sprintf(msg, "%f\t%f\n", data.matrix[0][4], data.matrix[0][1]);
     debug(msg);
     return data;
 }
