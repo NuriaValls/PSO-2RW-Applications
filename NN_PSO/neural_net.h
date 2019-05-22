@@ -34,22 +34,55 @@ typedef struct {
     int rows;
 } Matrix;
 
+typedef struct {
+    float *params;          // paràmetres actuals
+    float *velocity;        // velocitat actual
+    float *best_params;     // millors paràmetres individuals
+    float best_fit;
+} Particle;
+
+typedef struct {
+    Particle *particles;
+    float *best_params;
+    float best_fit;
+    int iterations;
+    float *vmax;
+    float best_train_acc;
+    float best_val_acc;
+} Swarm;
+
 
 //void init_weights(float weights[INIT_WEIGHTS]);
+
 Matrix MAT_create(int rows, int cols);
+
 //void X_test(float test[ROWS_TEST][COLS_TEST]);
+
 Matrix X_train();
+
 Matrix y_train(Matrix data);
+
 //void make_y_test(float test[ROWS_TEST][COLS_TEST], float y_test[ROWS_TEST]);
+
 float relu(float value);
+
 float sigmoid(float value);
+
 //void arrange_weights(float individual[INIT_WEIGHTS], float matrix1[ROWS_W1][COLS_W1], float matrix2[ROWS_W2][COLS_W2]);
+
 //void matrix_multiplication1(float first[ROWS_DATA][COLS_DATA], float second[ROWS_W1][COLS_W1], float multiply[ROWS_DOT1][COLS_DOT1]);
+
 //void matrix_multiplication2(float first2[ROWS_DOT1][COLS_DOT1], float second2[ROWS_W2][COLS_W2], float multiply2[ROWS_DOT2][COLS_DOT2]);
-Matrix matrix_multiplication(Matrix arg1, Matrix arg2, char act_function[10]);
+
+Matrix matrix_multiplication(Matrix arg1, Matrix arg2, char act_function);
+
 float mse_loss(Matrix actual_y, Matrix yhat);
+
 float accuracy(Matrix actual_y, Matrix yhat);
+
 void predict(float input[2], float matrix1[ROWS_W1][COLS_W1], float matrix2[ROWS_W2][COLS_W2], float dot1[ROWS_DOT1][COLS_DOT1], float dot2[1]);
-float fit_value(float weights[9], float *train_acc, float *val_acc);
+
+float fit_value(float weights[9], Swarm *swarm);
+
 
 #endif

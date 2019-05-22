@@ -51,7 +51,7 @@ Config readConfigFile(char *filename) {
 }
 
 
-void createInitialPopulation(Config config, Swarm *swarm, float function(float x, float y), float *train_acc, float *val_acc) {
+void createInitialPopulation(Config config, Swarm *swarm) {
 
     swarm->particles = malloc((size_t) sizeof(Particle) * config.n);
     char msg[LENGTH];
@@ -84,7 +84,7 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
         //sprintf(msg, "%f\n", p.best_params[0]);
         //debug(msg);
 
-        p.best_fit = fit_value(weights, train_acc, val_acc);
+        p.best_fit = fit_value(weights, swarm);
         swarm->particles[i] = p;
     }
 
@@ -92,6 +92,7 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
     swarm->best_params = malloc((size_t) sizeof(float) * config.d);
     swarm->iterations = 0;
     swarm->vmax = malloc((size_t) sizeof(float) * config.d);
+    swarm->best_val_acc = 0;
 
     for (int j = 0; j < config.d; j++) {
         swarm->vmax[j] = config.vmax * (config.param_range[j].max - config.param_range[j].min);
@@ -100,7 +101,7 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
 }
 
 
-void getFitValues(Config c, Swarm *swarm, float function(float x, float y), float *train_acc, float *val_acc) {
+void getFitValues(Config c, Swarm *swarm) {
 
     for (int i=0; i<c.n; i++) {
         float fit = 0;
@@ -110,7 +111,7 @@ void getFitValues(Config c, Swarm *swarm, float function(float x, float y), floa
 
         float weights[9] = {swarm->particles[i].params[0], swarm->particles[i].params[1], swarm->particles[i].params[2], swarm->particles[i].params[3], swarm->particles[i].params[4], swarm->particles[i].params[5], swarm->particles[i].params[6], swarm->particles[i].params[7], swarm->particles[i].params[8]};
 
-        fit = fit_value(weights, train_acc, val_acc);
+        fit = fit_value(weights, swarm);
         //arrange_weights(weights,m1,m2);
         //fit = function(swarm->particles[i].params[0], swarm->particles[i].params[1]);
 
@@ -131,7 +132,7 @@ void getFitValues(Config c, Swarm *swarm, float function(float x, float y), floa
 }
 
 
-void updateVelocity(Config c, Swarm *swarm, float function(float x, float y)) {
+void updateVelocity(Config c, Swarm *swarm) {
 
     char msg[LENGTH];
     float cognitive;
@@ -160,7 +161,7 @@ void updateVelocity(Config c, Swarm *swarm, float function(float x, float y)) {
 }
 
 
-void updateVelocity_vMax(Config c, Swarm *swarm, float function(float x, float y)) {
+void updateVelocity_vMax(Config c, Swarm *swarm) {
 
     char msg[LENGTH];
     float cognitive;
@@ -185,7 +186,7 @@ void updateVelocity_vMax(Config c, Swarm *swarm, float function(float x, float y
 }
 
 
-void updateVelocity_fixedWeights(Config c, Swarm *swarm, float function(float x, float y)) {
+void updateVelocity_fixedWeights(Config c, Swarm *swarm) {
 
     char msg[LENGTH];
     float cognitive;
@@ -210,7 +211,7 @@ void updateVelocity_fixedWeights(Config c, Swarm *swarm, float function(float x,
 }
 
 
-void updateVelocity_decreasingInertia(Config c, Swarm *swarm, float function(float x, float y), int max_t) {
+void updateVelocity_decreasingInertia(Config c, Swarm *swarm, int max_t) {
 
     char msg[LENGTH];
     float cognitive;
@@ -238,20 +239,20 @@ void updateVelocity_decreasingInertia(Config c, Swarm *swarm, float function(flo
 }
 
 
-void select_updateVelocity(int select, Config c, Swarm *swarm, float function(float x, float y), int max_t) {
+void select_updateVelocity(int select, Config c, Swarm *swarm, int max_t) {
 
     switch (select) {
         case 0:
-            updateVelocity(c, swarm, function);
+            updateVelocity(c, swarm);
             break;
         case 1:
-            updateVelocity_vMax(c, swarm, function);
+            updateVelocity_vMax(c, swarm);
             break;
         case 2:
-            updateVelocity_fixedWeights(c, swarm, function);
+            updateVelocity_fixedWeights(c, swarm);
             break;
         case 3:
-            updateVelocity_decreasingInertia(c, swarm, function, max_t);
+            updateVelocity_decreasingInertia(c, swarm, max_t);
 
         default:
             break;
