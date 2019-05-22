@@ -48,7 +48,7 @@ float sigmoid(float value);
 //void matrix_multiplication2(float first2[ROWS_DOT1][COLS_DOT1], float second2[ROWS_W2][COLS_W2], float multiply2[ROWS_DOT2][COLS_DOT2]);
 Matrix matrix_multiplication(Matrix arg1, Matrix arg2, char act_function[10]);
 float mse_loss(Matrix actual_y, Matrix yhat);
-float accuracy(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y], float yhat_binary[ROWS_Y]);
+float accuracy(Matrix actual_y, Matrix yhat);
 void predict(float input[2], float matrix1[ROWS_W1][COLS_W1], float matrix2[ROWS_W2][COLS_W2], float dot1[ROWS_DOT1][COLS_DOT1], float dot2[1]);
 float fit_value(float weights[9], float *train_acc, float *val_acc);
 

@@ -112,21 +112,23 @@ float mse_loss(Matrix actual_y, Matrix yhat) {
     return sum / ROWS_DATA;
 }
 
-float accuracy(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y], float yhat_binary[ROWS_Y]) {
+float accuracy(Matrix actual_y, Matrix yhat) {
     float sum = 0;
-    float see_acc;
-    char msg[100];
 
-    for (int i = 0; i < ROWS_Y; i++) {
-        if (yhat[i][0] >= 0.5) {
-            yhat_binary[i] = 1;
+
+    Matrix yhat_binary = MAT_create(actual_y.rows, 1);
+    float see_acc;
+
+    for (int i = 0; i < actual_y.rows; i++) {
+        if (yhat.matrix[i][0] >= 0.5) {
+            yhat_binary.matrix[i][0] = 1;
         }
         else {
-            yhat_binary[i] = 0;
+            yhat_binary.matrix[i][0] = 0;
         }
     }
-    for (int i = 0; i < ROWS_Y; i++) {
-        if (yhat_binary[i] == actual_y[i]) {
+    for (int i = 0; i < yhat_binary.rows; i++) {
+        if (yhat_binary.matrix[i][0] == actual_y.matrix[i][0]) {
             sum += 1;
         }
         else {
@@ -134,12 +136,13 @@ float accuracy(float yhat[ROWS_Y][COLS_Y], float actual_y[ROWS_Y], float yhat_bi
         }
     }
 
+
     /*for (int i=0;i<ROWS_Y;i++){
-        sprintf(msg, "%f\t%f\n", yhat_binary[i], actual_y[i]);
+        sprintf(msg, "%d\t%d\n", yhat_binary.matrix[i][0], actual_y.matrix[i][0]);
         debug(msg);
     }*/
-
-    see_acc = sum/ROWS_Y;
+    //char msg[300];
+    see_acc = sum/yhat_binary.rows;
     //sprintf(msg, "%f\n", see_acc);
     //debug(msg);
     return see_acc;
@@ -211,8 +214,14 @@ float fit_value(float weights[9], float *train_acc, float *val_acc) { //float we
         activated = matrix_multiplication(activated, w_matrix, act_f);
     }
 
+    /*char msg[300];
+    sprintf(msg, "%d")*/
     loss = mse_loss(y, activated);
-    //*train_acc = accuracy(output, y, yhat_binary);
+    *train_acc = accuracy(y, activated);
+
+    //char msg[300];
+    //sprintf(msg, "%f\t", train_acc);
+    //debug(msg);
 
     /*for (int i=0;i<ROWS_TEST;i++){
         predict(test[i], matrix1, matrix2, dot1, dot2);
