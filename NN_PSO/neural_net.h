@@ -80,9 +80,10 @@ float mse_loss(Matrix actual_y, Matrix yhat);
 
 float accuracy(Matrix actual_y, Matrix yhat);
 
-void predict(float input[2], float matrix1[ROWS_W1][COLS_W1], float matrix2[ROWS_W2][COLS_W2], float dot1[ROWS_DOT1][COLS_DOT1], float dot2[1]);
+Matrix predict(Matrix data, Swarm *swarm);
 
-float fit_value(float weights[9], Swarm *swarm);
+//float fit_value(float weights[9], Swarm *swarm);
+float fit_value(Matrix data, Matrix y, float weights[9], Swarm *swarm);
 
 
 #endif
