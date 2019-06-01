@@ -28,25 +28,6 @@ Matrix X_train() {
     return data;
 }
 
-/*void X_test(float test[ROWS_TEST][COLS_TEST]) {
-    for (int i = 0; i < ROWS_TEST; i++) {
-        for (int j = 0; j < COLS_TEST; j++) {
-            float r = (float) rand();
-            test[i][j] = 2 * r / RAND_MAX + -1;
-        }
-    }
-}*/
-
-/*void y_train(float data[ROWS_DATA][COLS_DATA], float y[ROWS_Y]) {
-    for (int i = 0; i < ROWS_DATA; i++) {
-        if (data[i][1] >= 0) {
-            y[i] = 1;
-        } else {
-            y[i] = 0;
-        }
-    }
-}*/
-
 Matrix y_train(Matrix data) {
     Matrix y;
     char msg[LENGTH];
@@ -60,17 +41,6 @@ Matrix y_train(Matrix data) {
     }
     return y;
 }
-
-
-/*void make_y_test(float test[ROWS_TEST][COLS_TEST], float y_test[ROWS_TEST]) {
-    for (int i = 0; i < ROWS_TEST; i++) {
-        if (test[i][1] >= 0) {
-            y_test[i] = 1;
-        } else {
-            y_test[i] = 0;
-        }
-    }
-}*/
 
 float relu(float value) {
     if (value >= 0) {
@@ -139,7 +109,7 @@ float accuracy(Matrix actual_y, Matrix yhat) {
     return see_acc;
 }
 
-Matrix predict(Matrix data, Swarm *swarm){
+Matrix forward_pass(Matrix data, float weights[9]){
 
     int architecture[N_LAYERS] = {2,3,1};
     char acts[2] = "rs";
@@ -156,71 +126,16 @@ Matrix predict(Matrix data, Swarm *swarm){
 
     for (int i = 0; i < N_LAYERS-1; i++){
         char act_f = acts[i];
-        int count = 0;
-        int n_weights = dim_weights[i];
-
-        float vector_weights[n_weights];
-        Matrix w_matrix;
-
-        w_matrix = MAT_create(architecture[i], architecture[i+1]);
-
-        for (int j = initial_value; j < initial_value+n_weights; j++){
-            vector_weights[count] = swarm->best_params[j];
-            count = count + 1;
-        }
-
-        count = 0;
-
-        initial_value = initial_value+n_weights;
-
-        for (int j = 0; j < architecture[i]; j++){
-            for (int k = 0; k < architecture[i+1]; k++){
-                w_matrix.matrix[j][k] = vector_weights[count];
-                count = count + 1;
-            }
-        }
-
-        activated = matrix_multiplication(activated, w_matrix, act_f);
-    }
-    //char msg[300];
-    //sprintf(msg, "%f\t", activated.matrix[0][0])
-    char msg[300];
-    sprintf(msg, "%f\t", data.matrix[0][0]);
-    debug(msg);
-    return activated;
-}
-
-float fit_value(Matrix data, Matrix y, float weights[9], Swarm *swarm) { //float weights[9], float matrix1[2][3],float matrix2[3][1],float data[50][2],float y[50],float multiply[50][3],float multiply2[50][1]){
-    Matrix output;
-    //Matrix data;
-    //data = MAT_create(ROWS_DATA, COLS_DATA);
-    //Matrix y = MAT_create(data.rows, 1);
-    Matrix yhat = MAT_create(data.rows, 1);
-    float test[ROWS_TEST][COLS_TEST];
-    float y_test[ROWS_TEST];
-    float yhat_binary[ROWS_Y];
-    float loss;
-    char msg[LENGTH];
-
-
-    //data = X_train();
-    //y = y_train(data);
-
-    int architecture[N_LAYERS] = {2,3,1};
-    char acts[2] = "rs";
-
-    int dim_weights[N_LAYERS-1];
-
-    for (int i = 0; i < N_LAYERS-1; i++){
-        dim_weights[i] = architecture[i]*architecture[i+1];
-    }
-
-    Matrix activated;
-    int initial_value = 0;
-    activated = data;
-
-    for (int i = 0; i < N_LAYERS-1; i++){
-        char act_f = acts[i];
+        /*switch (act_f){
+            case "r":
+                relu();
+                break;
+            case "s":
+                sigmoid();
+                break;
+            default:
+                break;
+        }*/
         int count = 0;
         int n_weights = dim_weights[i];
 
@@ -247,21 +162,16 @@ float fit_value(Matrix data, Matrix y, float weights[9], Swarm *swarm) { //float
 
         activated = matrix_multiplication(activated, w_matrix, act_f);
     }
+    return activated;
+}
+
+float fit_value(Matrix data, Matrix y, float weights[9], Swarm *swarm) {
+    float loss;
+    Matrix activated;
+
+    activated = forward_pass(data, weights);
 
     loss = mse_loss(y, activated);
-    float t_acc = accuracy(y, activated);
-
-
-    yhat = predict(data, swarm);
-    float b_acc = accuracy(y, yhat);
-
-
-    //sprintf(msg, "%f\t", b_acc);
-    //debug(msg);
-
-    /*if (t_acc > swarm->best_train_acc) {
-        swarm->best_train_acc = t_acc;
-    }*/
 
     return loss;
 }

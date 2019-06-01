@@ -31,9 +31,9 @@ typedef struct {
 
 Config readConfigFile(char *filename);
 
-void createInitialPopulation(Config config, Swarm *swarm);
+void createInitialPopulation(Config config, Swarm *swarm, Matrix data, Matrix y);
 
-void getFitValues(Config c, Swarm *swarm);
+void getFitValues(Config c, Swarm *swarm, Matrix data, Matrix y);
 
 void updateVelocity(Config c, Swarm *swarm);
 

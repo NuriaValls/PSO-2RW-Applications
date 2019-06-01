@@ -51,7 +51,7 @@ Config readConfigFile(char *filename) {
 }
 
 
-void createInitialPopulation(Config config, Swarm *swarm) {
+void createInitialPopulation(Config config, Swarm *swarm, Matrix data, Matrix y) {
 
     swarm->particles = malloc((size_t) sizeof(Particle) * config.n);
     char msg[LENGTH];
@@ -84,7 +84,7 @@ void createInitialPopulation(Config config, Swarm *swarm) {
         //sprintf(msg, "%f\n", p.best_params[0]);
         //debug(msg);
 
-        p.best_fit = fit_value(weights, swarm);
+        p.best_fit = fit_value(data, y, weights, swarm);
         swarm->particles[i] = p;
     }
 
@@ -112,8 +112,6 @@ void getFitValues(Config c, Swarm *swarm, Matrix data, Matrix y) {
         float weights[9] = {swarm->particles[i].params[0], swarm->particles[i].params[1], swarm->particles[i].params[2], swarm->particles[i].params[3], swarm->particles[i].params[4], swarm->particles[i].params[5], swarm->particles[i].params[6], swarm->particles[i].params[7], swarm->particles[i].params[8]};
 
         fit = fit_value(data, y, weights, swarm);
-        //arrange_weights(weights,m1,m2);
-        //fit = function(swarm->particles[i].params[0], swarm->particles[i].params[1]);
 
         if (fit < swarm->particles[i].best_fit) {
             swarm->particles[i].best_fit = fit;
