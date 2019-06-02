@@ -14,33 +14,41 @@ Matrix MAT_create(int rows, int cols){
     return m;
 }
 
-Matrix X_train() {
-    Matrix data;
-    data = MAT_create(ROWS_DATA, COLS_DATA);
+Matrix X_train(data) {
+    Matrix train;
+    train = MAT_create(data.rows, data.cols-1);
 
-    for (int i = 0; i < data.rows; i++) {
-        for (int j = 0; j < data.cols; j++) {
+    for (int i = 0; i < train.rows; i++) {
+        for (int j = 0; j < train.cols; j++) {
             float r = (float) rand();
-            data.matrix[i][j] = 2 * r / RAND_MAX + -1;
+            train.matrix[i][j] = data.matrix[i][j];
 
         }
     }
-    return data;
+    return train;
 }
 
-Matrix y_train(Matrix data) {
+Matrix read_y(Matrix data) {
+    Matrix y = MAT_create(data.rows, 1);
+    for (int i = 0; i< data.rows; i++){
+        y.matrix[i][0] = data.matrix[i][2];
+    }
+    return y;
+}
+
+/*Matrix y_train(Matrix train) {
     Matrix y;
     char msg[LENGTH];
     y = MAT_create(data.rows, 1);
     for (int i = 0; i < data.rows; i++) {
-        if (data.matrix[i][1] >= 0) {
+        if (train.matrix[i][1] >= 0) {
             y.matrix[i][0] = 1;
         } else {
             y.matrix[i][0] = 0;
         }
     }
     return y;
-}
+}*/
 
 float relu(float value) {
     if (value >= 0) {

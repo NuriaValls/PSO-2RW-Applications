@@ -22,9 +22,13 @@ int main(int argc, char **argv) {
     int not_converged = 1;
     double best_fit_compare;
 
-    Matrix yhat;
     Matrix data;
+    Matrix data2;
+
+    Matrix train;
     Matrix y;
+    Matrix yhat;
+
     Matrix test;
     Matrix y_test;
     Matrix yhat_test;
@@ -37,14 +41,22 @@ int main(int argc, char **argv) {
     }
 
     config = readConfigFile(argv[1]);
+    data = readDataFile("train.txt", 50, 3);
+    data2 = readDataFile("test.txt", 50, 3);
 
-    data = X_train();
-    y = y_train(data);
+    train = X_train(data);
+    y = read_y(train);
 
-    test = X_train();
-    y_test = y_train(test);
+    train = X_train(data2);
+    y_test = read_y(test);
 
-    createInitialPopulation(config, &swarm, data, y);
+
+    //y = y_train(data);
+
+    //test = X_train();
+    //y_test = y_train(test);
+
+    createInitialPopulation(config, &swarm, train, y);
 
 
     while (not_converged) {
@@ -73,7 +85,7 @@ int main(int argc, char **argv) {
             not_converged = 0;
         }
 
-        yhat = forward_pass(data, swarm.best_params);
+        yhat = forward_pass(train, swarm.best_params);
         float b_train_acc = accuracy(y, yhat);
 
         yhat_test = forward_pass(test, swarm.best_params);

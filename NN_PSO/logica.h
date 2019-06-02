@@ -28,7 +28,6 @@ typedef struct {
     float vmax;
 } Config;
 
-
 Config readConfigFile(char *filename);
 
 Matrix readDataFile(char *filename, int nRows, int nCols);
