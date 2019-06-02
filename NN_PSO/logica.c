@@ -51,6 +51,40 @@ Config readConfigFile(char *filename) {
 }
 
 
+Matrix readDataFile(char *filename, int nRows, int nCols) {
+    int file;
+    char msg[LENGTH], *aux;
+    Matrix mtx;
+
+    file = open(filename, O_RDONLY);
+    if (file <= 0) {
+        sprintf(msg, MSG_FILE_ERR, filename);
+        print(msg);
+        exit(EXIT_FAILURE);
+    }
+
+    mtx = MAT_create(nRows, nCols);
+
+    for (int i = 0; i<nRows; i++) {
+        aux = readFileDescriptor(file);
+        mtx.matrix[i][0] = atof(aux);
+        free(aux);
+
+        aux = readFileDescriptor(file);
+        mtx.matrix[i][1] = atof(aux);
+        free(aux);
+
+        aux = readFileDescriptor(file);
+        mtx.matrix[i][2] = atof(aux);
+        free(aux);
+    }
+
+    close(file);
+
+    return mtx;
+}
+
+
 void createInitialPopulation(Config config, Swarm *swarm, Matrix data, Matrix y) {
 
     swarm->particles = malloc((size_t) sizeof(Particle) * config.n);

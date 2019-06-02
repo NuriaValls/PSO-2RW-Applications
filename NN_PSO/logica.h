@@ -31,6 +31,8 @@ typedef struct {
 
 Config readConfigFile(char *filename);
 
+Matrix readDataFile(char *filename, int nRows, int nCols);
+
 void createInitialPopulation(Config config, Swarm *swarm, Matrix data, Matrix y);
 
 void getFitValues(Config c, Swarm *swarm, Matrix data, Matrix y);
