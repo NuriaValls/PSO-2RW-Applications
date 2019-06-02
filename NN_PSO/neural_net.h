@@ -43,7 +43,7 @@ typedef struct {
 
 Matrix MAT_create(int rows, int cols);
 
-Matrix X_train(data);
+Matrix X_train(Matrix data);
 
 Matrix read_y(Matrix data);
 //Matrix y_train(Matrix data);

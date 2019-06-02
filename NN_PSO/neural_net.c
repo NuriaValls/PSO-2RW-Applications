@@ -14,7 +14,7 @@ Matrix MAT_create(int rows, int cols){
     return m;
 }
 
-Matrix X_train(data) {
+Matrix X_train(Matrix data) {
     Matrix train;
     train = MAT_create(data.rows, data.cols-1);
 
