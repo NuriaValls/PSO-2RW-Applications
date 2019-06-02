@@ -4,11 +4,11 @@
 
 
 int select_velocity_method = 3;
-int convergence_factor = 100;
+int convergence_factor = 200;
 
 
 char checkProgramArguments(int argc) {
-    return argc == 2;
+    return argc == 4;
 }
 
 int main(int argc, char **argv) {
@@ -41,15 +41,16 @@ int main(int argc, char **argv) {
     }
 
     config = readConfigFile(argv[1]);
-    data = readDataFile("train.txt", 50, 3);
-    data2 = readDataFile("test.txt", 50, 3);
+    data = readDataFile(argv[2], 50, 3);
+
+    data2 = readDataFile(argv[3], 50, 3);
 
     train = X_train(data);
-    y = read_y(train);
+    y = read_y(data);
 
-    train = X_train(data2);
-    y_test = read_y(test);
+    test = X_train(data2);
 
+    y_test = read_y(data2);
 
     //y = y_train(data);
 
@@ -61,7 +62,7 @@ int main(int argc, char **argv) {
 
     while (not_converged) {
 
-        getFitValues(config, &swarm, data, y);
+        getFitValues(config, &swarm, train, y);
 
 
         best_fit_compare = trunc(swarm.best_fit * 100000000);
