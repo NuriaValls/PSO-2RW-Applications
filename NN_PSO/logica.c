@@ -147,6 +147,10 @@ void getFitValues(Config c, Swarm *swarm, Matrix data, Matrix y) {
 
         fit = fit_value(data, y, weights, swarm);
 
+        //char msg[100];
+        //sprintf(msg, "%f\t", fit);
+        //debug(msg);
+
         if (fit < swarm->particles[i].best_fit) {
             swarm->particles[i].best_fit = fit;
             for (int j = 0; j < c.d; j++) {

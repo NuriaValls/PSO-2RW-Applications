@@ -4,7 +4,7 @@
 
 
 int select_velocity_method = 3;
-int convergence_factor = 200;
+int convergence_factor = 100;
 
 
 char checkProgramArguments(int argc) {
@@ -97,7 +97,8 @@ int main(int argc, char **argv) {
         swarm.best_train_acc = b_train_acc;
         swarm.best_val_acc = b_val_acc;
 
-        sprintf(msg, "I: %d, Best fit value: %f, train_acc = %f, val_loss = %f, val_acc = %f\n", swarm.iterations, swarm.best_fit, swarm.best_train_acc, val_loss, swarm.best_val_acc);//,swarm.best_params[0],swarm.best_params[1],swarm.best_params[2],swarm.best_params[3],swarm.best_params[4],swarm.best_params[5],swarm.best_params[6],swarm.best_params[7],swarm.best_params[8]);
+        sprintf(msg, "I: %d, Best fit value: %f, train_acc = %f, val_loss = %f, val_acc = %f weights = %f, %f, %f, %f, %f, %f, %f, %f, %f\n", swarm.iterations, swarm.best_fit, swarm.best_train_acc, val_loss, swarm.best_val_acc,swarm.best_params[0],swarm.best_params[1],swarm.best_params[2],swarm.best_params[3],swarm.best_params[4],swarm.best_params[5],swarm.best_params[6],swarm.best_params[7],swarm.best_params[8]);
+        //sprintf(msg, "I: %d, Best fit value: %f, train_acc = %f, val_acc = %f weights = %f, %f, %f, %f, %f, %f, %f, %f, %f\n", swarm.iterations, swarm.best_fit, swarm.best_train_acc, swarm.best_val_acc,swarm.best_params[0],swarm.best_params[1],swarm.best_params[2],swarm.best_params[3],swarm.best_params[4],swarm.best_params[5],swarm.best_params[6],swarm.best_params[7],swarm.best_params[8]);
             //swarm.iterations, swarm.best_fit, swarm.best_params[0],swarm.best_params[1],swarm.best_params[2],swarm.best_params[3],swarm.best_params[4],swarm.best_params[5],swarm.best_params[6],swarm.best_params[7],swarm.best_params[8]);
         debug(msg);
 
