@@ -14,13 +14,16 @@ char checkProgramArguments(int argc) {
 float function(float x, float y) {
 
     /* Parabola with minimum in 0: */
-    return x*x + y*y;
+    //return x*x + y*y;
 
     /* Ackleys function: */
     //return (float) (-20 * exp(-0.2 * sqrt(0.5 * (x * x + y * y))) - exp(0.5 * (cos(2 * M_PI * x) + cos(2 * M_PI * y))) + 20 + M_E);
 
     /* Multiple global and local minima function: */
-    //return (float) (x * x * (4 - 2.1 * x * x + (1 / 3) * x * x * x * x) + x * y + y * y * (-4 + 4 * y * y));
+    return (float) (x * x * (4 - 2.1 * x * x + (1 / 3) * x * x * x * x) + x * y + y * y * (-4 + 4 * y * y));
+
+    /* Rosenbrock function: */
+    //return (1-x)*(1-x) + 100*(y-x*x)*(y-x*x);
 }
 
 int main(int argc, char **argv) {
@@ -68,8 +71,6 @@ int main(int argc, char **argv) {
             count_convergence++;
         } else {
             count_convergence = 0;
-            sprintf(msg, "\t%f, %f\n",best_fit_local, best_fit_compare);
-            debug(msg);
             best_fit_local = best_fit_compare;
         }
 

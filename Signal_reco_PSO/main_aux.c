@@ -192,8 +192,13 @@ int main(int argc, char **argv) {
 
     modulus1 = solutionInput(config, swarm.best_params[0], swarm.best_params[1], 0, 0, 0, 0);
 
+    sprintf(msg, "\n\n");
+    debug(msg);
+
     for (int i = 0; i<config.FFTlength; i++) {
         subs_modulus1[i] = fabs(fabs(modulus[i]) - fabs(modulus1[i]));
+        sprintf(msg, "%f, ", modulus1[i]);
+        debug(msg);
     }
 
     // Busquem el segon pic
@@ -208,16 +213,19 @@ int main(int argc, char **argv) {
     float *modulus2;
     float *subs_modulus2 = malloc(sizeof(float) * (config.FFTlength));
 
+    sprintf(msg, "\n\n");
+    debug(msg);
+
     modulus2 = solutionInput(config, swarm2.best_params[0], swarm2.best_params[1], 0, 0, 0, 0);
 
     for (int i = 0; i<config.FFTlength; i++) {
         subs_modulus2[i] = fabs(fabs(subs_modulus1[i]) - fabs(modulus2[i]));
-        sprintf(msg, "%f, ", subs_modulus2[i]);
-        //debug(msg);
+        sprintf(msg, "%f, ", modulus2[i]);
+        debug(msg);
     }
 
     sprintf(msg, "\n\n");
-    //debug(msg);
+    debug(msg);
 
     // Busquem el tercer pic
     Swarm swarm3;
@@ -247,19 +255,44 @@ int main(int argc, char **argv) {
 
     for (int i = 0; i<config.FFTlength; i++) {
         subs_modulus3[i] = fabs(fabs(subs_modulus2[i]) - fabs(modulus3[i]));
-        sprintf(msg, "%f, ", subs_modulus3[i]);
-        //debug(msg);
+        sprintf(msg, "%f, ", modulus3[i]);
+        debug(msg);
     }
 
     sprintf(msg, "\n\n>>>>> Best fit value: %f, Params: a0=%f a1=%f a2=%f w0=%f w1=%f w2=%f\n\n", swarm3.best_fit,
             swarm.best_params[0], swarm2.best_params[0], swarm3.best_params[0], swarm.best_params[1], swarm2.best_params[1], swarm3.best_params[1]);
     debug(msg);
 
+    //***************************************
+
+    float *modulus_final;
+    float *subs_modulus_final = malloc(sizeof(float) * (config.FFTlength));
+
+    modulus_final = solutionInput(config, swarm.best_params[0], swarm.best_params[1], swarm2.best_params[0], swarm2.best_params[1], swarm3.best_params[0], swarm3.best_params[1]);
+
+    sprintf(msg, "\n\n");
+    debug(msg);
+
+    for (int i = 0; i<config.FFTlength; i++) {
+        subs_modulus_final[i] = fabs(fabs(modulus[i]) - fabs(modulus_final[i]));
+        sprintf(msg, "%f, ", modulus_final[i]);
+        debug(msg);
+    }
+
+    sprintf(msg, "\n\n");
+    debug(msg);
+
+    for (int i = 0; i<config.FFTlength; i++) {
+        sprintf(msg, "%f, ", subs_modulus_final[i]);
+        debug(msg);
+    }
+
+
 
     // Now we through another swarm with the initial parameters as the best ones found before.
 
 
-    config_2 = readConfigFile(argv[2]);
+    /*config_2 = readConfigFile(argv[2]);
 
     createInitialPopulation(config_2, &swarm4, function, modulus, 0);
 
@@ -287,7 +320,7 @@ int main(int argc, char **argv) {
     sprintf(msg, "\n\n%f", aux);
     debug(msg);
 
-    convergenceLoop(config_2, &swarm4, modulus, 0);
+    convergenceLoop(config_2, &swarm4, modulus, 0);*/
 
 
     return EXIT_SUCCESS;
