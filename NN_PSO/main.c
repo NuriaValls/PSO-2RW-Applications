@@ -8,7 +8,7 @@ int convergence_factor = 100;
 
 
 char checkProgramArguments(int argc) {
-    return argc == 2;
+    return argc == 4;
 }
 
 int main(int argc, char **argv) {
@@ -41,15 +41,16 @@ int main(int argc, char **argv) {
     }
 
     config = readConfigFile(argv[1]);
-    data = readDataFile("train.txt", 50, 3);
-    data2 = readDataFile("test.txt", 50, 3);
+    data = readDataFile(argv[2], 50, 3);
+
+    data2 = readDataFile(argv[3], 50, 3);
 
     train = X_train(data);
-    y = read_y(train);
+    y = read_y(data);
 
-    train = X_train(data2);
-    y_test = read_y(test);
+    test = X_train(data2);
 
+    y_test = read_y(data2);
 
     //y = y_train(data);
 
@@ -61,7 +62,7 @@ int main(int argc, char **argv) {
 
     while (not_converged) {
 
-        getFitValues(config, &swarm, data, y);
+        getFitValues(config, &swarm, train, y);
 
 
         best_fit_compare = trunc(swarm.best_fit * 100000000);
@@ -96,7 +97,8 @@ int main(int argc, char **argv) {
         swarm.best_train_acc = b_train_acc;
         swarm.best_val_acc = b_val_acc;
 
-        sprintf(msg, "I: %d, Best fit value: %f, train_acc = %f, val_loss = %f, val_acc = %f\n", swarm.iterations, swarm.best_fit, swarm.best_train_acc, val_loss, swarm.best_val_acc);//,swarm.best_params[0],swarm.best_params[1],swarm.best_params[2],swarm.best_params[3],swarm.best_params[4],swarm.best_params[5],swarm.best_params[6],swarm.best_params[7],swarm.best_params[8]);
+        sprintf(msg, "I: %d, Best fit value: %f, train_acc = %f, val_loss = %f, val_acc = %f weights = %f, %f, %f, %f, %f, %f, %f, %f, %f\n", swarm.iterations, swarm.best_fit, swarm.best_train_acc, val_loss, swarm.best_val_acc,swarm.best_params[0],swarm.best_params[1],swarm.best_params[2],swarm.best_params[3],swarm.best_params[4],swarm.best_params[5],swarm.best_params[6],swarm.best_params[7],swarm.best_params[8]);
+        //sprintf(msg, "I: %d, Best fit value: %f, train_acc = %f, val_acc = %f weights = %f, %f, %f, %f, %f, %f, %f, %f, %f\n", swarm.iterations, swarm.best_fit, swarm.best_train_acc, swarm.best_val_acc,swarm.best_params[0],swarm.best_params[1],swarm.best_params[2],swarm.best_params[3],swarm.best_params[4],swarm.best_params[5],swarm.best_params[6],swarm.best_params[7],swarm.best_params[8]);
             //swarm.iterations, swarm.best_fit, swarm.best_params[0],swarm.best_params[1],swarm.best_params[2],swarm.best_params[3],swarm.best_params[4],swarm.best_params[5],swarm.best_params[6],swarm.best_params[7],swarm.best_params[8]);
         debug(msg);
 

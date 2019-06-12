@@ -129,8 +129,9 @@ Matrix forward_pass(Matrix data, float weights[9]){
     }
 
     Matrix activated;
-    int initial_value = 0;
     activated = data;
+
+    int initial_value = 0;
 
     for (int i = 0; i < N_LAYERS-1; i++){
         char act_f = acts[i];
@@ -167,6 +168,10 @@ Matrix forward_pass(Matrix data, float weights[9]){
                 count = count + 1;
             }
         }
+
+        //char msg[300];
+        //sprintf(msg, "(%d)w11 = %f\t w21 = %f\n", i, w_matrix.matrix[0][0], w_matrix.matrix[1][0]);
+        //debug(msg);
 
         activated = matrix_multiplication(activated, w_matrix, act_f);
     }
