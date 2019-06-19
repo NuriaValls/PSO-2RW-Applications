@@ -101,7 +101,7 @@ void createInitialPopulation(Config config, Swarm *swarm, Matrix data, Matrix y)
             p.params[j] = (config.param_range[j].max - config.param_range[j].min) * r / RAND_MAX + config.param_range[j].min;
         }
 
-        //printf("%f,%f\n", p.params[0], p.params[1]);
+        //sprintf("%f,%f\n", p.params[0], p.params[1]);
 
         p.velocity = malloc((size_t) sizeof(float) * config.d);
         p.best_params = malloc((size_t) sizeof(float) * config.d);
@@ -115,6 +115,9 @@ void createInitialPopulation(Config config, Swarm *swarm, Matrix data, Matrix y)
         //p.best_fit = function(p.best_params[0], p.best_params[1]);
         char msg[300];
         float weights[9] = {p.best_params[0], p.best_params[1], p.best_params[2], p.best_params[3], p.best_params[4], p.best_params[5], p.best_params[6], p.best_params[7], p.best_params[8]};
+        //float weights[18] = {p.best_params[0], p.best_params[1], p.best_params[2], p.best_params[3], p.best_params[4], p.best_params[5], p.best_params[6], p.best_params[7], p.best_params[8],p.best_params[9],p.best_params[10],p.best_params[11],p.best_params[12],p.best_params[13],p.best_params[14],p.best_params[15],p.best_params[16],p.best_params[17]};
+        //float weights[3] = {p.best_params[0], p.best_params[1], p.best_params[2]};//, p.best_params[3], p.best_params[4], p.best_params[5]};
+
         //sprintf(msg, "%f\n", p.best_params[0]);
         //debug(msg);
 
@@ -143,7 +146,9 @@ void getFitValues(Config c, Swarm *swarm, Matrix data, Matrix y) {
         //float m1[2][3];
         //float m2[3][1];
 
+        //float weights[3] = {swarm->particles[i].params[0], swarm->particles[i].params[1], swarm->particles[i].params[2]};//, swarm->particles[i].params[3], swarm->particles[i].params[4], swarm->particles[i].params[5]};
         float weights[9] = {swarm->particles[i].params[0], swarm->particles[i].params[1], swarm->particles[i].params[2], swarm->particles[i].params[3], swarm->particles[i].params[4], swarm->particles[i].params[5], swarm->particles[i].params[6], swarm->particles[i].params[7], swarm->particles[i].params[8]};
+        //float weights[18] = {swarm->particles[i].params[0], swarm->particles[i].params[1], swarm->particles[i].params[2], swarm->particles[i].params[3], swarm->particles[i].params[4], swarm->particles[i].params[5], swarm->particles[i].params[6], swarm->particles[i].params[7], swarm->particles[i].params[8],swarm->particles[i].params[9],swarm->particles[i].params[10],swarm->particles[i].params[11],swarm->particles[i].params[12],swarm->particles[i].params[13],swarm->particles[i].params[14],swarm->particles[i].params[15],swarm->particles[i].params[16],swarm->particles[i].params[17]};
 
         fit = fit_value(data, y, weights, swarm);
 
@@ -182,8 +187,8 @@ void updateVelocity(Config c, Swarm *swarm) {
 
 //            w = (float) (1.1 - (swarm->particles[i].best_params[j] / swarm->best_params[j]));
 
-            cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
-            social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
+            cognitive = 1.6 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
+            social = 1.7 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
 
             /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
                     function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
@@ -207,8 +212,8 @@ void updateVelocity_vMax(Config c, Swarm *swarm) {
     for (int i=0; i<c.n; i++) {
         for (int j = 0; j < c.d; j++) {
 
-            cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
-            social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
+            cognitive = 1.6 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
+            social = 1.7 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
 
             /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
                     function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
@@ -258,10 +263,11 @@ void updateVelocity_decreasingInertia(Config c, Swarm *swarm, int max_t) {
     for (int i=0; i<c.n; i++) {
         for (int j = 0; j < c.d; j++) {
 
-            w = (float) ((0.9 - 0.4) * (max_t - swarm->iterations) / (max_t + 0.4));
+            //w = (float) ((0.9 - 0.4) * (max_t - swarm->iterations) / (max_t + 0.4));
+            w = (float) (0.4 + tanh(swarm->iterations*(0.5/max_t)));
 
-            cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
-            social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
+            cognitive = 1.6 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
+            social = 1.7 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
 
             /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
                     function(swarm->particles[i].params[0], swarm->particles[i].params[1]));

@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
     Config config;
     Swarm swarm;
     char msg[LENGTH];
-    int iter = 100;
+    int iter = 500;
     int count_convergence = 0;
     double best_fit_local = 0.0;
     int not_converged = 1;
@@ -41,9 +41,8 @@ int main(int argc, char **argv) {
     }
 
     config = readConfigFile(argv[1]);
-    data = readDataFile(argv[2], 50, 3);
-
-    data2 = readDataFile(argv[3], 50, 3);
+    data = readDataFile(argv[2], 2500, 3);
+    data2 = readDataFile(argv[3], 400, 3);
 
     train = X_train(data);
     y = read_y(data);
@@ -87,6 +86,12 @@ int main(int argc, char **argv) {
         }
 
         yhat = forward_pass(train, swarm.best_params);
+
+        /*for (int t=0; t<yhat.rows;t++){
+            char msg[100];
+            sprintf(msg, "%f\t", yhat.matrix[t][0]);
+            debug(msg);
+        }*/
         float b_train_acc = accuracy(y, yhat);
 
         yhat_test = forward_pass(test, swarm.best_params);

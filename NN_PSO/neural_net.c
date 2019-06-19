@@ -87,7 +87,7 @@ float mse_loss(Matrix actual_y, Matrix yhat) {
     for (int i = 0; i < actual_y.rows; i++) {
         sum = sum + pow((yhat.matrix[i][0] - actual_y.matrix[i][0]), 2);
     }
-    return sum / ROWS_DATA;
+    return sum / actual_y.rows;
 }
 
 float accuracy(Matrix actual_y, Matrix yhat) {
@@ -118,7 +118,6 @@ float accuracy(Matrix actual_y, Matrix yhat) {
 }
 
 Matrix forward_pass(Matrix data, float weights[9]){
-
     int architecture[N_LAYERS] = {2,3,1};
     char acts[2] = "rs";
 

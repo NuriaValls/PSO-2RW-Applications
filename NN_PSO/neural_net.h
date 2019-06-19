@@ -6,17 +6,8 @@
 #include <stdio.h>
 #include "utils.h"
 
-#define ROWS_DATA 50
-#define COLS_DATA 2
-#define INIT_WEIGHTS 9
-#define ROWS_Y 50
-#define COLS_Y 1
 
 #define N_LAYERS 3
-#define NEURONS_INPUT 2
-#define NEURONS_OUTPUT 1
-#define NEURONS_HIDDEN 3
-
 
 typedef struct {
     float **matrix;
@@ -58,8 +49,10 @@ float mse_loss(Matrix actual_y, Matrix yhat);
 
 float accuracy(Matrix actual_y, Matrix yhat);
 
+//Matrix forward_pass(Matrix data, float weights[3]);
 Matrix forward_pass(Matrix data, float weights[9]);
 
+//float fit_value(Matrix data, Matrix y, float weights[3], Swarm *swarm);
 float fit_value(Matrix data, Matrix y, float weights[9], Swarm *swarm);
 
 
