@@ -112,12 +112,14 @@ Feel free to contact us for questions and comments:
 
 ## BibTex reference format for Thesis citations
 
+```bash
 @misc{PSO_Prat_Valls_thesis,
 title={Particle Swarm Optimization (PSO) and two real world applications},
 url={https://github.com/NuriaValls/TFM_PSO},
 author={Albert Prat, Núria Valls},
 year={2019},
 }
+```
 
 ## BibTex reference format for code cotations
 
