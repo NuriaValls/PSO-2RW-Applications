@@ -85,7 +85,7 @@ psoAlgo config_file.txt
 
 ## Neural Network weights optimization
 
-In the folder [NN_PSO](https://github.com/NuriaValls/TFM_PSO/tree/master/NN_PSO) there are all the files needed to execute the optimization of the weights of a neural network given an architecture using the PSO algorithm.
+In the folder [NN_PSO](https://github.com/NuriaValls/TFM_PSO/tree/master/NN_PSO) there are all the files needed to execute the optimization of the weights of a neural network given an architecture and both a train and a test set using the PSO algorithm.
 
 ### Usage
 
@@ -97,7 +97,7 @@ Finally, execute the following commands:
 
 ```bash
 make
-psoAlgo config_file.txt
+psoAlgo config_file.txt TRAIN.txt TEST.txt
 ```
 
 
