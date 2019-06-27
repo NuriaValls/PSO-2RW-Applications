@@ -7,10 +7,24 @@ int select_velocity_method = 3;
 int convergence_factor = 100;
 
 
+/**
+ * Checks that the program arguments are the desired.
+ *
+ * @param argc  Argument counter.
+ * @return      Flag ok or ko.
+ */
 char checkProgramArguments(int argc) {
     return argc == 2;
 }
 
+
+/**
+ * Function to minimize.
+ *
+ * @param x     X value of the function at the evaluation point.
+ * @param y     Y value of the function at the evaluation point.
+ * @return      Value of the function at the point X,Y.
+ */
 float function(float x, float y) {
 
     /* Parabola with minimum in 0: */
@@ -26,6 +40,14 @@ float function(float x, float y) {
     //return (1-x)*(1-x) + 100*(y-x*x)*(y-x*x);
 }
 
+
+/**
+ * Main function
+ *
+ * @param argc  Argument counter.
+ * @param argv  Argument value.
+ * @return      Process statul.
+ */
 int main(int argc, char **argv) {
 
     Config config;

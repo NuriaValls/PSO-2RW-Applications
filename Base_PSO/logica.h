@@ -48,15 +48,15 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
 
 void getFitValues(Config c, Swarm *swarm, float function(float x ,float y));
 
-void updateVelocity(Config c, Swarm *swarm, float function(float x ,float y));
+void updateVelocity(Config c, Swarm *swarm);
 
-void updateVelocity_vMax(Config c, Swarm *swarm, float function(float x, float y));
+void updateVelocity_vMax(Config c, Swarm *swarm);
 
-void updateVelocity_fixedWeights(Config c, Swarm *swarm, float function(float x, float y));
+void updateVelocity_fixedWeights(Config c, Swarm *swarm);
 
-void updateVelocity_decreasingInertia(Config c, Swarm *swarm, float function(float x, float y), int max_t);
+void updateVelocity_decreasingInertia(Config c, Swarm *swarm, int max_t);
 
-void select_updateVelocity(int select, Config c, Swarm *swarm, float function(float x, float y), int max_t);
+void select_updateVelocity(int select, Config c, Swarm *swarm, int max_t);
 
 void updateParameters(Config c, Swarm *swarm);
 

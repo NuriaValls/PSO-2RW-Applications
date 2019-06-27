@@ -1,5 +1,11 @@
 #include "logica.h"
 
+/**
+ * This function reads the file passed as an argument and creates and fills a Config object with the information in the file.
+ *
+ * @param filename  Name of the file to read.
+ * @return The configuration of the file.
+ */
 Config readConfigFile(char *filename) {
     int file;
     char msg[LENGTH], *aux;
@@ -51,6 +57,13 @@ Config readConfigFile(char *filename) {
 }
 
 
+/**
+ * Initializes all the particles of the swarm with random values, and its respective parameters.
+ *
+ * @param config    Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ * @param function  Function to optimize.
+ */
 void createInitialPopulation(Config config, Swarm *swarm, float function(float x, float y)) {
 
     swarm->particles = malloc((size_t) sizeof(Particle) * config.n);
@@ -66,13 +79,10 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
             p.params[j] = (config.param_range[j].max - config.param_range[j].min) * r / RAND_MAX + config.param_range[j].min;
         }
 
-        //printf("%f,%f\n", p.params[0], p.params[1]);
-
         p.velocity = malloc((size_t) sizeof(float) * config.d);
         p.best_params = malloc((size_t) sizeof(float) * config.d);
 
         for (int j = 0; j < config.d; j++) {
-            //p.velocity[j] = ((float) rand()) / RAND_MAX;   // entre 0 i 1 (de moment)
             p.velocity[j] = (float) 0;
             p.best_params[j] = p.params[j];
         }
@@ -93,6 +103,13 @@ void createInitialPopulation(Config config, Swarm *swarm, float function(float x
 }
 
 
+/**
+ * Calculates the fit values of all the particles of the swarm.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ * @param function  Function to optimize.
+ */
 void getFitValues(Config c, Swarm *swarm, float function(float x, float y)) {
 
     for (int i=0; i<c.n; i++) {
@@ -117,27 +134,24 @@ void getFitValues(Config c, Swarm *swarm, float function(float x, float y)) {
 }
 
 
-void updateVelocity(Config c, Swarm *swarm, float function(float x, float y)) {
+/**
+ * Updates the velocity of all the parameters of all the particles of the swarm.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ */
+void updateVelocity(Config c, Swarm *swarm) {
 
     char msg[LENGTH];
     float cognitive;
     float social;
     float velocity;
 
-//    float w;
-
     for (int i=0; i<c.n; i++) {
         for (int j = 0; j < c.d; j++) {
 
-//            w = (float) (1.1 - (swarm->particles[i].best_params[j] / swarm->best_params[j]));
-
             cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
             social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
-
-            /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
-                    function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
-            sprintf(msg, "%f\n",w);
-            debug(msg);*/
 
             velocity = swarm->particles[i].velocity[j] + cognitive + social;
             swarm->particles[i].velocity[j] = velocity;
@@ -146,7 +160,13 @@ void updateVelocity(Config c, Swarm *swarm, float function(float x, float y)) {
 }
 
 
-void updateVelocity_vMax(Config c, Swarm *swarm, float function(float x, float y)) {
+/**
+ * Updates the velocity of all the parameters of all the particles of the swarm controling the maximum velocity value.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ */
+void updateVelocity_vMax(Config c, Swarm *swarm) {
 
     char msg[LENGTH];
     float cognitive;
@@ -158,11 +178,6 @@ void updateVelocity_vMax(Config c, Swarm *swarm, float function(float x, float y
 
             cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
             social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
-
-            /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
-                    function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
-            sprintf(msg, "%f\n",w);
-            debug(msg);*/
 
             velocity = swarm->particles[i].velocity[j] + cognitive + social;
             swarm->particles[i].velocity[j] = velocity > swarm->vmax[j] ? swarm->vmax[j] : velocity;
@@ -171,7 +186,13 @@ void updateVelocity_vMax(Config c, Swarm *swarm, float function(float x, float y
 }
 
 
-void updateVelocity_fixedWeights(Config c, Swarm *swarm, float function(float x, float y)) {
+/**
+ * Updates the velocity of all the parameters of all the particles of the swarm using the fixed weights method.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ */
+void updateVelocity_fixedWeights(Config c, Swarm *swarm) {
 
     char msg[LENGTH];
     float cognitive;
@@ -184,11 +205,6 @@ void updateVelocity_fixedWeights(Config c, Swarm *swarm, float function(float x,
             cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
             social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
 
-            /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
-                    function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
-            sprintf(msg, "%f\n",w);
-            debug(msg);*/
-
             velocity = (float) (V_FIXED_WEIGHT_VI * swarm->particles[i].velocity[j] + V_FIXED_WEIGHT_C * cognitive + V_FIXED_WEIGHT_C * social);
             swarm->particles[i].velocity[j] = velocity;
         }
@@ -196,7 +212,14 @@ void updateVelocity_fixedWeights(Config c, Swarm *swarm, float function(float x,
 }
 
 
-void updateVelocity_decreasingInertia(Config c, Swarm *swarm, float function(float x, float y), int max_t) {
+/**
+ * Updates the velocity of all the parameters of all the particles of the swarm using the increasing inertia weights method.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ * @param function  Function to optimize.
+ */
+void updateVelocity_decreasingInertia(Config c, Swarm *swarm, int max_t) {
 
     char msg[LENGTH];
     float cognitive;
@@ -212,11 +235,6 @@ void updateVelocity_decreasingInertia(Config c, Swarm *swarm, float function(flo
             cognitive = 2 * ((float) rand()) / RAND_MAX * (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
             social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
 
-            /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
-                    function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
-            sprintf(msg, "%f\n",w);
-            debug(msg);*/
-
             velocity = w * swarm->particles[i].velocity[j] + cognitive + social;
             swarm->particles[i].velocity[j] = velocity;
         }
@@ -224,20 +242,27 @@ void updateVelocity_decreasingInertia(Config c, Swarm *swarm, float function(flo
 }
 
 
-void select_updateVelocity(int select, Config c, Swarm *swarm, float function(float x, float y), int max_t) {
+/**
+ * Calls the function to updates vlocities according to a selection.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ * @param function  Function to optimize.
+ */
+void select_updateVelocity(int select, Config c, Swarm *swarm, int max_t) {
 
     switch (select) {
         case 0:
-            updateVelocity(c, swarm, function);
+            updateVelocity(c, swarm);
             break;
         case 1:
-            updateVelocity_vMax(c, swarm, function);
+            updateVelocity_vMax(c, swarm);
             break;
         case 2:
-            updateVelocity_fixedWeights(c, swarm, function);
+            updateVelocity_fixedWeights(c, swarm);
             break;
         case 3:
-            updateVelocity_decreasingInertia(c, swarm, function, max_t);
+            updateVelocity_decreasingInertia(c, swarm, max_t);
 
         default:
             break;
@@ -245,6 +270,12 @@ void select_updateVelocity(int select, Config c, Swarm *swarm, float function(fl
 }
 
 
+/**
+ * Updates the the parameters of all the particles of the swarm.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ */
 void updateParameters(Config c, Swarm *swarm) {
 
     float aux = 0;
