@@ -217,7 +217,7 @@ void updateVelocity_fixedWeights(Config c, Swarm *swarm) {
  *
  * @param c         Configuration information.
  * @param swarm     Contians all the information of the swarm and the particles.
- * @param function  Function to optimize.
+ * @param max_t     Maximum iterations.
  */
 void updateVelocity_decreasingInertia(Config c, Swarm *swarm, int max_t) {
 
@@ -245,9 +245,10 @@ void updateVelocity_decreasingInertia(Config c, Swarm *swarm, int max_t) {
 /**
  * Calls the function to updates vlocities according to a selection.
  *
+ * @param select    Selection of the velocity method.
  * @param c         Configuration information.
  * @param swarm     Contians all the information of the swarm and the particles.
- * @param function  Function to optimize.
+ * @param max_t     Maximum iterations.
  */
 void select_updateVelocity(int select, Config c, Swarm *swarm, int max_t) {
 

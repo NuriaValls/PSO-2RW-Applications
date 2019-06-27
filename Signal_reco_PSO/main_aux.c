@@ -7,10 +7,23 @@ int select_velocity_method = 3;
 int convergence_factor = 10000;
 
 
+/**
+ * Checks that the program arguments are the desired.
+ *
+ * @param argc  Argument counter.
+ * @return      Flag ok or ko.
+ */
 char checkProgramArguments(int argc) {
     return argc == 3;
 }
 
+
+/**
+ * Initial function that the algorithm has to find.
+ *
+ * @param t     Time
+ * @return      Value of the function at time t.
+ */
 float complex original_function(float t) {
 
     /* Example function. p.54 of the signal paper. */
@@ -28,7 +41,18 @@ float complex original_function(float t) {
 }
 
 
-
+/**
+ * Function to find without parameters.
+ *
+ * @param t     Time.
+ * @param a0    Amplotude of the first peak.
+ * @param w0    Frequency of the first peak.
+ * @param a1    Amplitude of the second peak.
+ * @param w1    Frequency of the second peak.
+ * @param a2    Amplitude if the third peak.
+ * @param w2    Frequency of the third peak.
+ * @return      Value of the function at time t.
+ */
 float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2) {
 
     /* Example function. p.54 of the signal paper. */
@@ -45,6 +69,19 @@ float complex function(float t, float a0, float w0, float a1, float w1, float a2
     return aux;
 }
 
+
+/**
+ * Evaluates the DFT of the objective function given the parameters.
+ *
+ * @param c     Configuration infromation.
+ * @param a0    Amplotude of the first peak.
+ * @param w0    Frequency of the first peak.
+ * @param a1    Amplitude of the second peak.
+ * @param w1    Frequency of the second peak.
+ * @param a2    Amplitude if the third peak.
+ * @param w2    Frequency of the third peak.
+ * @return
+ */
 float * solutionInput(Config c, float a0, float w0, float a1, float w1, float a2, float w2) {
 
     fftw_complex *in, *out;
@@ -77,6 +114,14 @@ float * solutionInput(Config c, float a0, float w0, float a1, float w1, float a2
 }
 
 
+/**
+ * Executes iterations of the swarm until the particles converge.
+ *
+ * @param config    Configuration infromation.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ * @param modulus   Values of the modulus of the DFT of the input signal.
+ * @param resize    Parameter to indicate the size of the parameters of the particles.
+ */
 void convergenceLoop (Config config, Swarm *swarm, float *modulus, int resize) {
 
     int not_converged = 1;
@@ -133,6 +178,12 @@ void convergenceLoop (Config config, Swarm *swarm, float *modulus, int resize) {
 }
 
 
+/**
+ * Orders the input array upwards and fills the index in order.
+ *
+ * @param myFloatArr    Values to order.
+ * @param myFloatIndex  Indexes of the values.
+ */
 void orderByValue(float myFloatArr[3], int myFloatIndex[3]) {
     int len = 3;
     int switched = 0;
@@ -155,6 +206,13 @@ void orderByValue(float myFloatArr[3], int myFloatIndex[3]) {
 }
 
 
+/**
+ * Main function
+ *
+ * @param argc  Argument counter.
+ * @param argv  Argument value.
+ * @return      Process statul.
+ */
 int main(int argc, char **argv) {
 
     Config config;
@@ -287,40 +345,6 @@ int main(int argc, char **argv) {
         debug(msg);
     }
 
-
-
-    // Now we through another swarm with the initial parameters as the best ones found before.
-
-
-    /*config_2 = readConfigFile(argv[2]);
-
-    createInitialPopulation(config_2, &swarm4, function, modulus, 0);
-
-    float r;
-    int frac_w = 1000;
-    int frac_a = 1000;
-
-    for (int i = 0; i < config_2.n; i++) {
-        r = (float) rand();
-        swarm4.particles[i].params[0] = swarm.best_params[0] + ((r / RAND_MAX) / frac_a);
-        r = (float) rand();
-        swarm4.particles[i].params[1] = swarm.best_params[1] + ((r / RAND_MAX) / frac_w);
-        r = (float) rand();
-        swarm4.particles[i].params[2] = swarm2.best_params[0] + ((r / RAND_MAX) / frac_a);
-        r = (float) rand();
-        swarm4.particles[i].params[3] = swarm2.best_params[1] + ((r / RAND_MAX) / frac_w);
-        r = (float) rand();
-        swarm4.particles[i].params[4] = swarm3.best_params[0] + ((r / RAND_MAX) / frac_a);
-        r = (float) rand();
-        swarm4.particles[i].params[5] = swarm3.best_params[1] + ((r / RAND_MAX) / frac_w);
-    }
-
-    aux = fitFunction(function, modulus, config_2, p, 0, 0, 0);
-
-    sprintf(msg, "\n\n%f", aux);
-    debug(msg);
-
-    convergenceLoop(config_2, &swarm4, modulus, 0);*/
 
 
     return EXIT_SUCCESS;

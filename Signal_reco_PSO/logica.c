@@ -1,5 +1,12 @@
 #include "logica.h"
 
+
+/**
+ * This function reads the file passed as an argument and creates and fills a Config object with the information in the file.
+ *
+ * @param filename  Name of the file to read.
+ * @return The configuration of the file.
+ */
 Config readConfigFile(char *filename) {
     int file;
     char msg[LENGTH], *aux;
@@ -55,6 +62,15 @@ Config readConfigFile(char *filename) {
 }
 
 
+/**
+ * Initializes all the particles of the swarm with random values, and its respective parameters.
+ *
+ * @param config            Configuration information.
+ * @param swarm             Contians all the information of the swarm and the particles.
+ * @param function          Function to optimize.
+ * @param original_modulus  Modulus of the DFT of the original input signal.
+ * @param resize            Parameter to indicate the size of the parameters of the particles.
+ */
 void createInitialPopulation(Config config, Swarm *swarm,
                              float complex function(float t, float a0, float w0, float a1, float w1, float a2,
                                                     float w2), float *original_modulus, int resize) {
@@ -73,13 +89,10 @@ void createInitialPopulation(Config config, Swarm *swarm,
                     (config.param_range[j].max - config.param_range[j].min) * r / RAND_MAX + config.param_range[j].min;
         }
 
-        //printf("%f,%f\n", p.params[0], p.params[1]);
-
         p.velocity = malloc((size_t) sizeof(float) * config.d);
         p.best_params = malloc((size_t) sizeof(float) * config.d);
 
         for (int j = 0; j < config.d; j++) {
-            //p.velocity[j] = ((float) rand()) / RAND_MAX;   // entre 0 i 1 (de moment)
             p.velocity[j] = (float) 0;
             p.best_params[j] = p.params[j];
         }
@@ -100,6 +113,16 @@ void createInitialPopulation(Config config, Swarm *swarm,
 }
 
 
+/**
+ * Calculates the fit values of all the particles of the swarm.
+ *
+ * @param c                 Configuration information.
+ * @param swarm             Contians all the information of the swarm and the particles.
+ * @param function          Function to optimize.
+ * @param original_modulus  Modulus of the DFT of the original input signal.
+ * @param print             Flag for printing on the terminal.
+ * @param resize            Parameter to indicate the size of the parameters of the particles.
+ */
 void getFitValues(Config c, Swarm *swarm,
                   float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2),
                   float *original_modulus, int print, int resize) {
@@ -129,29 +152,25 @@ void getFitValues(Config c, Swarm *swarm,
 }
 
 
-void updateVelocity(Config c, Swarm *swarm,
-                    float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2)) {
+/**
+ * Updates the velocity of all the parameters of all the particles of the swarm.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ */
+void updateVelocity(Config c, Swarm *swarm) {
 
     char msg[LENGTH];
     float cognitive;
     float social;
     float velocity;
 
-//    float w;
-
     for (int i = 0; i < c.n; i++) {
         for (int j = 0; j < c.d; j++) {
-
-//            w = (float) (1.1 - (swarm->particles[i].best_params[j] / swarm->best_params[j]));
 
             cognitive = 2 * ((float) rand()) / RAND_MAX *
                         (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
             social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
-
-            /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
-                    function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
-            sprintf(msg, "%f\n",w);
-            debug(msg);*/
 
             velocity = swarm->particles[i].velocity[j] + cognitive + social;
             swarm->particles[i].velocity[j] = velocity;
@@ -160,8 +179,13 @@ void updateVelocity(Config c, Swarm *swarm,
 }
 
 
-void updateVelocity_vMax(Config c, Swarm *swarm,
-                         float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2)) {
+/**
+ * Updates the velocity of all the parameters of all the particles of the swarm controling the maximum velocity value.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ */
+void updateVelocity_vMax(Config c, Swarm *swarm) {
 
     char msg[LENGTH];
     float cognitive;
@@ -174,11 +198,6 @@ void updateVelocity_vMax(Config c, Swarm *swarm,
             cognitive = 2 * ((float) rand()) / RAND_MAX *
                         (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
             social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
-
-            /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
-                    function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
-            sprintf(msg, "%f\n",w);
-            debug(msg);*/
 
             velocity = swarm->particles[i].velocity[j] + cognitive + social;
             swarm->particles[i].velocity[j] = velocity > swarm->vmax[j] ? swarm->vmax[j] : velocity;
@@ -187,9 +206,13 @@ void updateVelocity_vMax(Config c, Swarm *swarm,
 }
 
 
-void updateVelocity_fixedWeights(Config c, Swarm *swarm,
-                                 float complex function(float t, float a0, float w0, float a1, float w1, float a2,
-                                                        float w2)) {
+/**
+ * Updates the velocity of all the parameters of all the particles of the swarm using the fixed weights method.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ */
+void updateVelocity_fixedWeights(Config c, Swarm *swarm) {
 
     char msg[LENGTH];
     float cognitive;
@@ -202,11 +225,6 @@ void updateVelocity_fixedWeights(Config c, Swarm *swarm,
             cognitive = 2 * ((float) rand()) / RAND_MAX *
                         (swarm->particles[i].best_params[j] - swarm->particles[i].params[j]);
             social = 2 * ((float) rand()) / RAND_MAX * (swarm->best_params[j] - swarm->particles[i].params[j]);
-
-            /*sprintf(msg, "P: %d :  %f, %f, %f - %f, %f --> %f\n", i, swarm->particles[i].velocity[j], cognitive, social, swarm->particles[i].params[0], swarm->particles[i].params[1],
-                    function(swarm->particles[i].params[0], swarm->particles[i].params[1]));
-            sprintf(msg, "%f\n",w);
-            debug(msg);*/
 
             velocity = (float) (V_FIXED_WEIGHT_VI * swarm->particles[i].velocity[j] + V_FIXED_WEIGHT_C * cognitive +
                                 V_FIXED_WEIGHT_C * social);
@@ -216,9 +234,14 @@ void updateVelocity_fixedWeights(Config c, Swarm *swarm,
 }
 
 
-void updateVelocity_decreasingInertia(Config c, Swarm *swarm,
-                                      float complex function(float t, float a0, float w0, float a1, float w1, float a2,
-                                                             float w2), int max_t) {
+/**
+ * Updates the velocity of all the parameters of all the particles of the swarm using the increasing inertia weights method.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ * @param max_t     Maximum iterations.
+ */
+void updateVelocity_decreasingInertia(Config c, Swarm *swarm, int max_t) {
 
     char msg[LENGTH];
     float cognitive;
@@ -238,8 +261,6 @@ void updateVelocity_decreasingInertia(Config c, Swarm *swarm,
             sprintf(msg, "P: %d :  %f, %f, %f - %f --> %f \n", i, swarm->particles[i].velocity[j], cognitive, social,
                     swarm->particles[i].params[j],
                     swarm->particles[i].best_fit);
-            //sprintf(msg, "%f\n",w);
-            //debug(msg);
 
             velocity = w * swarm->particles[i].velocity[j] + cognitive + social;
             swarm->particles[i].velocity[j] = velocity;
@@ -248,22 +269,28 @@ void updateVelocity_decreasingInertia(Config c, Swarm *swarm,
 }
 
 
-void select_updateVelocity(int select, Config c, Swarm *swarm,
-                           float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2),
-                           int max_t) {
+/**
+ * Calls the function to updates vlocities according to a selection.
+ *
+ * @param select    Selection of the velocity method.
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ * @param max_t     Maximum iterations.
+ */
+void select_updateVelocity(int select, Config c, Swarm *swarm, int max_t) {
 
     switch (select) {
         case 0:
-            updateVelocity(c, swarm, function);
+            updateVelocity(c, swarm);
             break;
         case 1:
-            updateVelocity_vMax(c, swarm, function);
+            updateVelocity_vMax(c, swarm);
             break;
         case 2:
-            updateVelocity_fixedWeights(c, swarm, function);
+            updateVelocity_fixedWeights(c, swarm);
             break;
         case 3:
-            updateVelocity_decreasingInertia(c, swarm, function, max_t);
+            updateVelocity_decreasingInertia(c, swarm, max_t);
 
         default:
             break;
@@ -271,6 +298,12 @@ void select_updateVelocity(int select, Config c, Swarm *swarm,
 }
 
 
+/**
+ * Updates the the parameters of all the particles of the swarm.
+ *
+ * @param c         Configuration information.
+ * @param swarm     Contians all the information of the swarm and the particles.
+ */
 void updateParameters(Config c, Swarm *swarm) {
 
     float aux = 0;
@@ -288,6 +321,17 @@ void updateParameters(Config c, Swarm *swarm) {
 }
 
 
+/**
+ * Discretizes the signal function with the parameters of a particle and executes its DFT.
+ *
+ * @param in        Input of the DFT.
+ * @param out       Output of the DFT.
+ * @param c         Configuration Information.
+ * @param function  Function to optimize.
+ * @param particle  Particle of the swarm.
+ * @param best      Flag indicating if it is the best particle.
+ * @param resize    Parameter to indicate the size of the parameters of the particles.
+ */
 void sampleFunction(fftw_complex *in, fftw_complex *out, Config c,
                     float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2),
                     Particle particle, int best, int resize) {
@@ -330,6 +374,13 @@ void sampleFunction(fftw_complex *in, fftw_complex *out, Config c,
 }
 
 
+/**
+ * Calculates the modulus if the DFT.
+ *
+ * @param out   Output from the DFT.
+ * @param N     Number of samples of the modulus.
+ * @return      Sequence of the modulus of the DFT.
+ */
 float *FFTmodulus(fftw_complex *out, int N) {
     float *modulus;
 
@@ -343,6 +394,18 @@ float *FFTmodulus(fftw_complex *out, int N) {
 }
 
 
+/**
+ * Calculates the fit value for a particle.
+ *
+ * @param function          Function to optimize.
+ * @param original_modulus  Modulus of the DFT of the original input signal.
+ * @param c                 Configuration Information.
+ * @param particle          Particle of the swarm.
+ * @param best              Flag indicating if it is the best particle.
+ * @param print             Flag for printing on the terminal.
+ * @param resize            Parameter to indicate the size of the parameters of the particles.
+ * @return
+ */
 float fitFunction(float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2),
                   float *original_modulus, Config c, Particle particle, int best, int print, int resize) {
 
@@ -373,10 +436,6 @@ float fitFunction(float complex function(float t, float a0, float w0, float a1, 
         difference += fabsf(modulus[t] - original_modulus[t]) * 1;
     }
 
-//    printf("%f %f %f %f %f\n", modulus[0], modulus[1], modulus[2], modulus[3], modulus[4]);
-
-//    printf("%f, %f, %f, %f --> %f#\n", particle.params[0], particle.params[1], particle.params[2], particle.params[3],
-//           difference);
 
     return difference;
 }

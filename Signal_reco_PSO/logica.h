@@ -52,15 +52,15 @@ void createInitialPopulation(Config config, Swarm *swarm, float complex function
 
 void getFitValues(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), float * original_modulus, int print, int resize);
 
-void updateVelocity(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2));
+void updateVelocity(Config c, Swarm *swarm);
 
-void updateVelocity_vMax(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2));
+void updateVelocity_vMax(Config c, Swarm *swarm);
 
-void updateVelocity_fixedWeights(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2));
+void updateVelocity_fixedWeights(Config c, Swarm *swarm);
 
-void updateVelocity_decreasingInertia(Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), int max_t);
+void updateVelocity_decreasingInertia(Config c, Swarm *swarm, int max_t);
 
-void select_updateVelocity(int select, Config c, Swarm *swarm, float complex function(float t, float a0, float w0, float a1, float w1, float a2, float w2), int max_t);
+void select_updateVelocity(int select, Config c, Swarm *swarm, int max_t);
 
 void updateParameters(Config c, Swarm *swarm);
 
