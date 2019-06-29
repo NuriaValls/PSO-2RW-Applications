@@ -451,6 +451,15 @@ float sigmoid(float value) {
     return 1 / (1 + exp(-value));
 }
 
+
+/**
+ * Performs a dot product between two matrices and applies the activation function element by element.
+ *
+ * @param arg1              The first matrix to multiply.
+ * @param arg2              The second matrix to multiply.
+ * @param act_function      Either "r" standing for "ReLu" or "s" standing for "sigmoid".
+ * @return result           The resultant matrix already activated.
+ */
 Matrix matrix_multiplication(Matrix arg1, Matrix arg2, char act_function) {
     Matrix result = MAT_create(arg1.rows, arg2.cols);
     for (int c = 0; c < arg1.rows; c++) {
@@ -459,18 +468,30 @@ Matrix matrix_multiplication(Matrix arg1, Matrix arg2, char act_function) {
             for (int k = 0; k < arg1.cols; k++) {
                 sum += arg1.matrix[c][k] * arg2.matrix[k][d];
             }
-            if (act_function == 'r'){
-                result.matrix[c][d] = relu(sum);
-            }
-            else {
-                result.matrix[c][d] = sigmoid(sum);
-            }
 
+            switch (act_function) {
+                case 'r':
+                    result.matrix[c][d] = relu(sum);
+                    break;
+                case 's':
+                    result.matrix[c][d] = sigmoid(sum);
+                    break;
+                default:
+                    break;
+            }
         }
     }
     return result;
 }
 
+
+/**
+ * Performs a dot product between two matrices and applies the activation function element by element.
+ *
+ * @param actual_y      The actual set of labels.
+ * @param yhat          The prediction of the labels.
+ * @return mse_loss     The value of the mean square error loss function.
+ */
 float mse_loss(Matrix actual_y, Matrix yhat) {
     float sum = 0;
     for (int i = 0; i < actual_y.rows; i++) {
@@ -479,6 +500,13 @@ float mse_loss(Matrix actual_y, Matrix yhat) {
     return sum / actual_y.rows;
 }
 
+/**
+ * Performs a dot product between two matrices and applies the activation function element by element.
+ *
+ * @param actual_y      The actual set of labels.
+ * @param yhat          The prediction of the labels.
+ * @return see_acc      The accuracy measured as a fraction of 1. Proportion of samples that have been classified correctly,
+ */
 float accuracy(Matrix actual_y, Matrix yhat) {
     float sum = 0;
 
@@ -505,14 +533,14 @@ float accuracy(Matrix actual_y, Matrix yhat) {
     return see_acc;
 }
 
-int count_parameters(Config config) {
-    int sum = 0;
-    for (int i = 0; i < config.l-1; i++){
-        sum = sum + config.layers[i].neurons * config.layers[i+1].neurons;
-    }
-    return sum;
-}
-
+/**
+ * Performs the forward propagation step.
+ *
+ * @param data          The data without labels.
+ * @param weights       The set of weights that will perform the forward pass.
+ * @param config        Configuration information.
+ * @return activated    The prediction of the samples after doing the whole forward pass.
+ */
 Matrix forward_pass(Matrix data, float* weights, Config config) {
 
     Matrix activated;
@@ -549,6 +577,17 @@ Matrix forward_pass(Matrix data, float* weights, Config config) {
     return activated;
 }
 
+
+/**
+ * Calculates the fit value of the function.
+ *
+ * @param data          The data without labels.
+ * @param y             The set of labels.
+ * @param weights       The set of weights that will perform the forward pass.
+ * @param swarm         Contains all the information of the swarm and the particles.
+ * @param config        Configuration information.
+ * @return loss         The value of the loss function.
+ */
 float fit_value(Matrix data, Matrix y, float* weights, Swarm *swarm, Config config) {
     float loss;
     Matrix activated;
