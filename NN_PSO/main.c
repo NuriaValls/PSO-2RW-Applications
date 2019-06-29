@@ -6,11 +6,23 @@
 int select_velocity_method = 3;
 int convergence_factor = 100;
 
-
+/**
+ * Checks that the program arguments are the desired.
+ *
+ * @param argc  Argument counter.
+ * @return      Flag ok or ko.
+ */
 char checkProgramArguments(int argc) {
     return argc == 4;
 }
 
+/**
+ * Main function
+ *
+ * @param argc  Argument counter.
+ * @param argv  Argument value.
+ * @return      Process status.
+ */
 int main(int argc, char **argv) {
 
     Config config;
@@ -51,11 +63,6 @@ int main(int argc, char **argv) {
 
     y_test = read_y(data2);
 
-    //y = y_train(data);
-
-    //test = X_train();
-    //y_test = y_train(test);
-
     createInitialPopulation(config, &swarm, train, y);
 
 
@@ -85,16 +92,11 @@ int main(int argc, char **argv) {
             not_converged = 0;
         }
 
-        yhat = forward_pass(train, swarm.best_params);
+        yhat = forward_pass(train, swarm.best_params, config);
 
-        /*for (int t=0; t<yhat.rows;t++){
-            char msg[100];
-            sprintf(msg, "%f\t", yhat.matrix[t][0]);
-            debug(msg);
-        }*/
         float b_train_acc = accuracy(y, yhat);
 
-        yhat_test = forward_pass(test, swarm.best_params);
+        yhat_test = forward_pass(test, swarm.best_params, config);
 
         float val_loss = mse_loss(y_test, yhat_test);
         float b_val_acc = accuracy(y_test, yhat_test);
