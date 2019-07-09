@@ -28,10 +28,10 @@ char checkProgramArguments(int argc) {
 float function(float x, float y) {
 
     /* Parabola with minimum in 0: */
-    return x*x + y*y;
+    //return x*x + y*y;
 
     /* Ackleys function: */
-    //return (float) (-20 * exp(-0.2 * sqrt(0.5 * (x * x + y * y))) - exp(0.5 * (cos(2 * M_PI * x) + cos(2 * M_PI * y))) + 20 + M_E);
+    return (float) (-20 * exp(-0.2 * sqrt(0.5 * (x * x + y * y))) - exp(0.5 * (cos(2 * M_PI * x) + cos(2 * M_PI * y))) + 20 + M_E);
 
     /* Multiple global and local minima function: */
     //return (float) (x * x * (4 - 2.1 * x * x + (1 / 3) * x * x * x * x) + x * y + y * y * (-4 + 4 * y * y));
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
     FILE *fp;
 
 
-    fp=fopen("Visualization/execution_01.txt","w");
+    fp=fopen("Visualization/execution_02.txt","w");
 
     srand(time(NULL));
 
@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
             best_fit_local = best_fit_compare;
         }
 
-        select_updateVelocity(select_velocity_method, config, &swarm, function, iter);
+        select_updateVelocity(select_velocity_method, config, &swarm, iter);
 
         updateParameters(config, &swarm);
 
