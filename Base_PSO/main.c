@@ -46,7 +46,7 @@ float function(float x, float y) {
  *
  * @param argc  Argument counter.
  * @param argv  Argument value.
- * @return      Process statul.
+ * @return      Process status.
  */
 int main(int argc, char **argv) {
 

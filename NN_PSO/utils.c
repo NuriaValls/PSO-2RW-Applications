@@ -1,14 +1,31 @@
 #include "utils.h"
 
+/**
+ * Prints a message on the terminal.
+ *
+ * @param msg   Message to print.
+ */
 void print(const char *msg) {
 	write(STDOUT_FILENO, msg, strlen(msg));
 }
 
+
+/**
+ * Prints a message on the terminal with a \n.
+ *
+ * @param msg   Message to print.
+ */
 void println(const char *msg) {
 	write(STDOUT_FILENO, msg, strlen(msg));
 	write(STDOUT_FILENO, "\n", 1);
 }
 
+
+/**
+ * Prints a message on the terminal in yellow.
+ *
+ * @param msg   Message to print.
+ */
 void debug(const char *msg) {
 	if (DEBUG) {
 		write(STDERR_FILENO, COLOR_DEBUG, strlen(COLOR_DEBUG));
@@ -17,6 +34,13 @@ void debug(const char *msg) {
 	}
 }
 
+
+/**
+ * Reads chars from a file descriptor until it finds a ',', '\n' or '\0'.
+ *
+ * @param fd    File descriptor.
+ * @return      Char sequence.
+ */
 char *readFileDescriptor(int fd) {
 	char mychar = '\0';
 	int index = 0;

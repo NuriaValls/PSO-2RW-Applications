@@ -275,7 +275,7 @@ void select_updateVelocity(int select, Config c, Swarm *swarm, int max_t) {
  * Updates the the parameters of all the particles of the swarm.
  *
  * @param c         Configuration information.
- * @param swarm     Contians all the information of the swarm and the particles.
+ * @param swarm     Contains all the information of the swarm and the particles.
  */
 void updateParameters(Config c, Swarm *swarm) {
 
