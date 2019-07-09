@@ -130,10 +130,28 @@ void convergenceLoop (Config config, Swarm *swarm, float *modulus, int resize) {
     double best_fit_local = 0.0;
     int iter = 100000000;
     int count_convergence = 0;
+    int print = 0;
+
 
     while (not_converged) {
 
-        getFitValues(config, swarm, function, modulus, 0, resize);
+        if ((swarm->iterations == 1) || (swarm->iterations == 10) || (swarm->iterations == 30) || (swarm->iterations == 50) || (swarm->iterations == 100) || (swarm->iterations == 500)) {
+            Particle p;
+            p.params = malloc((size_t) sizeof(float) * 6);
+            p.params[0] = swarm->best_params[0];
+            p.params[1] = swarm->best_params[1];
+            p.params[2] = swarm->best_params[2];
+            p.params[3] = swarm->best_params[3];
+            p.params[4] = swarm->best_params[4];
+            p.params[5] = swarm->best_params[5];
+
+            if (print == 1) {
+                fitFunction(function, modulus, config, p, 0, 1, 0);
+            }
+
+        }
+
+        getFitValues(config, swarm, function, modulus, print, resize);
 
         sprintf(msg, "I: %d, Best fit value: %f, Params: a0=%f a1=%f a2=%f w0=%f w1=%f w2=%f\n", swarm->iterations, swarm->best_fit,
                 swarm->best_params[0], swarm->best_params[2], swarm->best_params[4], swarm->best_params[1], swarm->best_params[3], swarm->best_params[5]);
@@ -145,7 +163,7 @@ void convergenceLoop (Config config, Swarm *swarm, float *modulus, int resize) {
             best_fit_local = best_fit_compare;
         }
 
-        select_updateVelocity(select_velocity_method, config, swarm, function, iter);
+        select_updateVelocity(select_velocity_method, config, swarm, iter);
 
         updateParameters(config, swarm);
 

@@ -1,5 +1,5 @@
 CFLAGS = -Wall -Wextra -lm -O5 -Wno-unused-variable -Wno-unused-parameter -I/usr/local/include -L/usr/local/lib -lfftw3
-MAIN = data_main_aux.c
+MAIN = main.c
 MODULES = logica utils
 EXE = psoAlgo
 

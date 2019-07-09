@@ -130,7 +130,7 @@ void getFitValues(Config c, Swarm *swarm,
     for (int i = 0; i < c.n; i++) {
         float fit = 0;
 
-        fit = fitFunction(function, original_modulus, c, swarm->particles[i], 0, print, resize);
+        fit = fitFunction(function, original_modulus, c, swarm->particles[i], 0, 0, resize);
 
         //printf("%f, %f, %f, %f --> %f\n", swarm->particles[i].params[0], swarm->particles[i].params[1], swarm->particles[i].params[2], swarm->particles[i].params[3], fit);
 
@@ -426,6 +426,9 @@ float fitFunction(float complex function(float t, float a0, float w0, float a1, 
             sprintf(msg, "%f, ", modulus[i]);
             debug(msg);
         }
+
+        sprintf(msg, "\n###########################\n");
+        debug(msg);
     }
 
     fftw_free(in);

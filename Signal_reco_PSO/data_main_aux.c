@@ -145,7 +145,7 @@ void convergenceLoop (Config config, Swarm *swarm, float *modulus, int resize) {
             best_fit_local = best_fit_compare;
         }
 
-        select_updateVelocity(select_velocity_method, config, swarm, function, iter);
+        select_updateVelocity(select_velocity_method, config, swarm, iter);
 
         updateParameters(config, swarm);
 
